@@ -125,9 +125,14 @@
 
 	tpd12s015: encoder {
 		compatible = "ti,tpd12s015";
-
-		gpios = <&pcf_hdmi 4 GPIO_ACTIVE_HIGH>,	/* P4, CT CP HPD */
-			<&pcf_hdmi 5 GPIO_ACTIVE_HIGH>,	/* P5, LS OE */
+		/*
+		 * By default pcf_hdmi lines 4 and 5 are used for hotplug support
+		 * With sensor initialization now migrated to M4, pcf_hdmi isn't available
+		 * instead supply a dummy gpio line. The dummy gpio line supplied is 
+		 * pcf_lcd lines 0 and 1, which isn't used.
+		 */
+		gpios = <&pcf_lcd 0 GPIO_ACTIVE_HIGH>,	/* P4, CT CP HPD */
+			<&pcf_lcd 1 GPIO_ACTIVE_HIGH>,	/* P5, LS OE */
 			<&gpio7 12 GPIO_ACTIVE_HIGH>;	/* gpio7_12/sp1_cs2, HPD */
 
 		ports {
@@ -237,8 +242,6 @@
 		lines-initial-states = <0x1498>;
 		gpio-controller;
 		#gpio-cells = <2>;
-		interrupt-controller;
-		#interrupt-cells = <2>;
 	};
 
 	tlv320aic3106: tlv320aic3106@19 {
