@@ -15,15 +15,16 @@ i2cexp: &i2c5 {
 
 /*
  * Following is the mapping of the cameras and video ports:
+ * This is for the RevC onwards of DRA72 EVMs
  *
  * +-------+--------------------+--------+---------+---------+---------+---------+
  * | Video |   VIP port name    | LVDS   | DES I2C | Remote  | SER I2C | CAM I2C |
  * | Port  | Inst Slice  Port   | Camera | Addr    | I2C bus | Alias   | Alias   |
  * +-------+--------------------+--------+---------+---------+---------+---------+
- * | vin2a | VIP1 Slice1 Port A |  cam1  |   0x60  |   11    |   0x74  |   0x38  |
  * | vin1a | VIP1 Slice0 Port A |  cam2  |   0x64  |   12    |   0x75  |   0x39  |
- * | vin2b | VIP1 Slice1 Port B |  cam3  |   0x68  |   13    |   0x76  |   0x3A  |
- * | vin1b | VIP1 Slice0 Port B |  cam4  |   0x6C  |   14    |   0x77  |   0x3B  |
+ * | vin1b | VIP1 Slice0 Port B |  cam5  |   0x69  |   15    |   0x78  |   0x3C  |
+ * | vin2a | VIP1 Slice1 Port A |  cam1  |   0x60  |   11    |   0x74  |   0x38  |
+ * | vin2b | VIP1 Slice1 Port B |  cam4  |   0x6C  |   14    |   0x77  |   0x3B  |
  * +-------+--------------------+--------+---------+---------+---------+---------+
  *
  * For easier access, all the remote devices can be accessed using the remote bus
@@ -38,14 +39,14 @@ i2cexp: &i2c5 {
 	pinctrl-0 = <&vip_mux>;
 
 	/* Following is the mapping of interfaces
-	 * vin1A <= vin5A (remapped)
+	 * vin1A <= vin3A (remapped)
 	 * vin1B <= vin4B (remapped, only available option)
 	 * vin2A <= vin2A (default)
-	 * vin2B <= vin3B (default)
+	 * vin2B <= vin2B (default)
 	 */
 	vip_mux: pinmux_vin5a_pins {
 		pinctrl-single,pins = <
-			0x0	(VIP_VIN5A | VIP_VIN4B | VIP_VIN2A | VIP_VIN3B)
+			0x0	(VIP_VIN3A | VIP_VIN4B | VIP_VIN2A | VIP_VIN2B)
 		>;
 	};
 };
@@ -64,34 +65,31 @@ i2cexp: &i2c5 {
 };
 
 &ovcam1 {
-	/* Select between onboard OV10633 camera and daughter card vin */
+	/* Select between OV10633 camera, ethernet and external vin2a */
 	mux-gpios =
 		<&pcf_hdmi 2	GPIO_ACTIVE_LOW>,	/* VIN2_S0 */
 		<&pcf_hdmi 6	GPIO_ACTIVE_HIGH>;	/* VIN2_S2 */
 };
 
 &ovcam2 {
-	/* No board muxes */
+	/* Select between GPMC, VOUT3 (FPDlink disp) and external vin1a */
+	mux-gpios =
+		<&pcf_gpio_21 0 GPIO_ACTIVE_HIGH>,	/* SEL_GPMC_AD_VID_S0 */
+		<&pcf_gpio_21 7 GPIO_ACTIVE_LOW>;	/* SEL_GPMC_AD_VID_S2 */
 };
 
 &ovcam3 {
-	/* No board muxes */
+	status = "disabled";
 };
 
-/* This is to not hog the GPIO
- * We need to set the gpio from the camera driver
- * Note that this will disable the ethernet */
-/delete-node/ &sel_enet_mux_hog;
-
 &ovcam4 {
-	/* No board muxes */
+	/* Select  */
 	mux-gpios =
-		<&pcf_hdmi 7	GPIO_ACTIVE_LOW>,	/* SEL_VIN4_MUX_S0 */
-		<&pcf_gpio_21 4	GPIO_ACTIVE_HIGH>;	/* SEL_ENET_MUX_S0 */
+		<&pcf_hdmi 11	GPIO_ACTIVE_LOW>;	/* MMC3_SEL */
 };
 
 &ovcam5 {
-	status = "disabled";
+	/* No board muxes */
 };
 
 &ovcam6 {
@@ -116,7 +114,7 @@ i2cexp: &i2c5 {
 	status = "okay";
 	endpoint@0 {
 		slave-mode;
-		remote-endpoint = <&cam4>;
+		remote-endpoint = <&cam5>;
 	};
 };
 
@@ -136,6 +134,6 @@ i2cexp: &i2c5 {
 	status = "okay";
 	endpoint@0 {
 		slave-mode;
-		remote-endpoint = <&cam3>;
+		remote-endpoint = <&cam4>;
 	};
 };
