@@ -1,0 +1,311 @@
+/*
+ * Copyright (C) 2016 D3 Engineering
+ *
+ * Based on am571x-idk.dts
+ * Copyright (C) 2015 Texas Instruments Incorporated
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This file describes PCA-00C008104. It should describe all variant and CPU
+ * specific decisions. It should also provide pinctrl groups for all standard
+ * peripheral muxes.
+ *
+ */
+
+#include "dra74x.dtsi"
+#include "d3-tda2xx-som.dtsi"
+#include "tda2x-abc-pinfunc.h"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	compatible = "ti,dra7-evm", "ti,dra742", "ti,dra74", "ti,dra7";
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x80000000 0x0 0x60000000>; /* 1536 MB */
+	};
+
+	reserved_mem: reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		ipu2_cma_pool: ipu2_cma@99000000 {
+			compatible = "shared-dma-pool";
+			reg = <0x0 0x99000000 0x0 0x5000000>;
+			reusable;
+			status = "okay";
+		};
+
+		dsp1_cma_pool: dsp1_cma@a1000000 {
+			compatible = "shared-dma-pool";
+			reg = <0x0 0xa1000000 0x0 0x2000000>;
+			reusable;
+			status = "okay";
+		};
+
+		ipu1_cma_pool: ipu1_cma@9e000000 {
+			compatible = "shared-dma-pool";
+			reg = <0x0 0x9e000000 0x0 0x2000000>;
+			reusable;
+			status = "okay";
+		};
+
+		dsp2_cma_pool: dsp2_cma@a3000000 {
+			compatible = "shared-dma-pool";
+			reg = <0x0 0xa3000000 0x0 0x2000000>;
+			reusable;
+			status = "okay";
+		};
+	};
+};
+
+&mailbox5 {
+	status = "okay";
+	mbox_ipu1_ipc3x: mbox_ipu1_ipc3x {
+		status = "okay";
+	};
+	mbox_dsp1_ipc3x: mbox_dsp1_ipc3x {
+		status = "okay";
+	};
+};
+
+&mailbox6 {
+	status = "okay";
+	mbox_ipu2_ipc3x: mbox_ipu2_ipc3x {
+		status = "okay";
+	};
+	mbox_dsp2_ipc3x: mbox_dsp2_ipc3x {
+		status = "okay";
+	};
+};
+
+&mmu0_dsp1 {
+	status = "okay";
+};
+
+&mmu1_dsp1 {
+	status = "okay";
+};
+
+&mmu0_dsp2 {
+	status = "okay";
+};
+
+&mmu1_dsp2 {
+	status = "okay";
+};
+
+&mmu_ipu1 {
+	status = "okay";
+};
+
+&mmu_ipu2 {
+	status = "okay";
+};
+
+&ipu2 {
+	status = "okay";
+	memory-region = <&ipu2_cma_pool>;
+	mboxes = <&mailbox6 &mbox_ipu2_ipc3x>;
+	timers = <&timer3>;
+	watchdog-timers = <&timer4>, <&timer9>;
+};
+
+&ipu1 {
+	status = "okay";
+	memory-region = <&ipu1_cma_pool>;
+	mboxes = <&mailbox5 &mbox_ipu1_ipc3x>;
+	timers = <&timer11>;
+	watchdog-timers = <&timer7>, <&timer8>;
+};
+
+&dsp1 {
+	status = "okay";
+	memory-region = <&dsp1_cma_pool>;
+	mboxes = <&mailbox5 &mbox_dsp1_ipc3x>;
+	timers = <&timer5>;
+	watchdog-timers = <&timer10>;
+};
+
+&dsp2 {
+	status = "okay";
+	memory-region = <&dsp2_cma_pool>;
+	mboxes = <&mailbox6 &mbox_dsp2_ipc3x>;
+	timers = <&timer6>;
+};
+
+&dra7_pmx_core {
+	mmc1_pins_default: mmc1_pins_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_MMC1_CLK	(PIN_INPUT_PULLUP | MUX_MODE0) /* mmc1_clk.clk */
+			TDA2X_ABC_PAD_MMC1_CMD	(PIN_INPUT_PULLUP | MUX_MODE0) /* mmc1_cmd.cmd */
+			TDA2X_ABC_PAD_MMC1_DAT0	(PIN_INPUT_PULLUP | MUX_MODE0) /* mmc1_dat0.dat0 */
+			TDA2X_ABC_PAD_MMC1_DAT1	(PIN_INPUT_PULLUP | MUX_MODE0) /* mmc1_dat1.dat1 */
+			TDA2X_ABC_PAD_MMC1_DAT2	(PIN_INPUT_PULLUP | MUX_MODE0) /* mmc1_dat2.dat2 */
+			TDA2X_ABC_PAD_MMC1_DAT3	(PIN_INPUT_PULLUP | MUX_MODE0) /* mmc1_dat3.dat3 */
+			TDA2X_ABC_PAD_MMC1_SDWP	(PIN_INPUT | MUX_MODE14)	/* mmc1sdwp.gpio6_28 */
+			TDA2X_ABC_PAD_MMC1_SDCD	(PIN_INPUT | MUX_MODE14)	/* mmc1sdcd.gpio6_29 */
+		>;
+	};
+
+	mmc1_pins_hs: mmc1_pins_hs {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_MMC1_CLK	(PIN_INPUT_PULLUP | MUX_VIRTUAL_MODE11 | MUX_MODE0)	/* mmc1_clk.clk */
+			TDA2X_ABC_PAD_MMC1_CMD	(PIN_INPUT_PULLUP | MUX_VIRTUAL_MODE11 | MUX_MODE0)	/* mmc1_cmd.cmd */
+			TDA2X_ABC_PAD_MMC1_DAT0	(PIN_INPUT_PULLUP | MUX_VIRTUAL_MODE11 | MUX_MODE0)	/* mmc1_dat0.dat0 */
+			TDA2X_ABC_PAD_MMC1_DAT1	(PIN_INPUT_PULLUP | MUX_VIRTUAL_MODE11 | MUX_MODE0)	/* mmc1_dat1.dat1 */
+			TDA2X_ABC_PAD_MMC1_DAT2	(PIN_INPUT_PULLUP | MUX_VIRTUAL_MODE11 | MUX_MODE0)	/* mmc1_dat2.dat2 */
+			TDA2X_ABC_PAD_MMC1_DAT3	(PIN_INPUT_PULLUP | MUX_VIRTUAL_MODE11 | MUX_MODE0)	/* mmc1_dat3.dat3 */
+			TDA2X_ABC_PAD_MMC1_SDWP	(PIN_INPUT | MUX_MODE14)	/* mmc1sdwp.gpio6_28 */
+			TDA2X_ABC_PAD_MMC1_SDCD	(PIN_INPUT | MUX_MODE14)	/* mmc1sdcd.gpio6_29 */
+		>;
+	};
+
+	mmc2_pins_default: mmc2_pins_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_GPMC_A23	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a23.mmc2_clk */
+			TDA2X_ABC_PAD_GPMC_CS1	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_cs1.mmc2_cmd */
+			TDA2X_ABC_PAD_GPMC_A24	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a24.mmc2_dat0 */
+			TDA2X_ABC_PAD_GPMC_A25	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a25.mmc2_dat1 */
+			TDA2X_ABC_PAD_GPMC_A26	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a26.mmc2_dat2 */
+			TDA2X_ABC_PAD_GPMC_A27	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a27.mmc2_dat3 */
+			TDA2X_ABC_PAD_GPMC_A19	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a19.mmc2_dat4 */
+			TDA2X_ABC_PAD_GPMC_A20	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a20.mmc2_dat5 */
+			TDA2X_ABC_PAD_GPMC_A21	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a21.mmc2_dat6 */
+			TDA2X_ABC_PAD_GPMC_A22	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a22.mmc2_dat7 */
+		>;
+	};
+
+	mmc2_pins_hs: mmc2_pins_hs {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_GPMC_A23	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a23.mmc2_clk */
+			TDA2X_ABC_PAD_GPMC_CS1	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_cs1.mmc2_cmd */
+			TDA2X_ABC_PAD_GPMC_A24	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a24.mmc2_dat0 */
+			TDA2X_ABC_PAD_GPMC_A25	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a25.mmc2_dat1 */
+			TDA2X_ABC_PAD_GPMC_A26	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a26.mmc2_dat2 */
+			TDA2X_ABC_PAD_GPMC_A27	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a27.mmc2_dat3 */
+			TDA2X_ABC_PAD_GPMC_A19	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a19.mmc2_dat4 */
+			TDA2X_ABC_PAD_GPMC_A20	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a20.mmc2_dat5 */
+			TDA2X_ABC_PAD_GPMC_A21	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a21.mmc2_dat6 */
+			TDA2X_ABC_PAD_GPMC_A22	(PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_a22.mmc2_dat7 */
+		>;
+	};
+
+	qspi1_pins_default: qspi1_pins_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_GPMC_A18	(PIN_INPUT | MUX_MODE1) /* gpmc_a18.qspi1_sclk */
+			TDA2X_ABC_PAD_GPMC_A13	(PIN_INPUT | MUX_MODE1) /* gpmc_a13.qspi1_rtclk */
+			TDA2X_ABC_PAD_GPMC_CS2	(PIN_INPUT | MUX_MODE1) /* gpmc_cs2.qspi1_cs0 */
+			TDA2X_ABC_PAD_GPMC_A16	(PIN_INPUT | MUX_MODE1) /* gpmc_a16.qspi1_d0 */
+			TDA2X_ABC_PAD_GPMC_A17	(PIN_INPUT | MUX_MODE1) /* gpmc_a17.qspi1_d1 */
+			TDA2X_ABC_PAD_GPMC_A15	(PIN_INPUT | MUX_MODE1) /* gpmc_a15.qspi1_d2 */
+			TDA2X_ABC_PAD_GPMC_A14	(PIN_INPUT | MUX_MODE1) /* gpmc_a14.qspi1_d3 */
+		>;
+	};
+
+	mcspi1_pins_default: mcspi1_pins_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_SPI1_SCLK	(PIN_INPUT | MUX_MODE0) /* spi1_sclk */
+			TDA2X_ABC_PAD_SPI1_D0	(PIN_INPUT | MUX_MODE0) /* spi1_d0 */
+			TDA2X_ABC_PAD_SPI1_D1	(PIN_INPUT | MUX_MODE0) /* spi1_d1 */
+			TDA2X_ABC_PAD_SPI1_CS0	(PIN_INPUT | MUX_MODE0) /* spi1_cs0 */
+			TDA2X_ABC_PAD_SPI1_CS1	(PIN_INPUT | MUX_MODE0) /* spi1_cs1 */
+		>;
+	};
+
+	i2c1_pins_default: i2c1_pins_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_I2C1_SDA	(PIN_INPUT | MUX_MODE0) /* i2c1_sda */
+			TDA2X_ABC_PAD_I2C1_SCL	(PIN_INPUT | MUX_MODE0) /* i2c1_scl */
+		>;
+	};
+
+	usb1_default: usb1_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_USB1_DRVVBUS	(PIN_OUTPUT | MUX_MODE0) /* usb1_drvvbus.usb1_drvvbus */
+		>;
+	};
+
+	usb2_default: usb2_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_USB2_DRVVBUS	(PIN_OUTPUT | MUX_MODE0) /* usb2_drvvbus.usb2_drvvbus */
+		>;
+	};
+
+	gpio_exp_som_default: gpio_exp_som_default {
+		pinctrl-single,pins = <
+			/* GPIO_EXP_INTn */
+			TDA2X_ABC_PAD_SPI2_D0	(PIN_INPUT | MUX_MODE14) /* spi2_d0.gpio7_16 : GPIO7_16 : GPIO208 */
+		>;
+	};
+
+	gpio_exp_bb_default: gpio_exp_bb_default {
+		pinctrl-single,pins = <
+			/* BB_GPIO_EXP_INTn */
+			TDA2X_ABC_PAD_SPI2_CS0	(PIN_INPUT | MUX_MODE14) /* spi2_cs0.gpio7_17 : GPIO7_17 : GPIO209 */
+		>;
+	};
+
+	led_som_debug_default: led_som_debug_default {
+		pinctrl-single,pins = <
+			TDA2X_ABC_PAD_UART2_TXD	(PIN_OUTPUT | MUX_MODE14) /* uart2_txd.gpio7_27 */
+		>;
+	};
+};
+
+&i2c1 {
+/* WARNING: Do not force i2c1 to rely on pinctrl
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pins_default>;
+*/
+};
+
+&gpio_exp_som {
+	pinctrl-names = "default";
+	pinctrl-0 = <&gpio_exp_som_default>;
+	interrupt-parent = <&gpio7>;
+	interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
+};
+
+&mmc1 {
+	pinctrl-names = "default", "hs";
+	pinctrl-0 = <&mmc1_pins_default>;
+	pinctrl-1 = <&mmc1_pins_hs>;
+	cd-gpios = <&gpio6 27 0>; /* mmc1_sdcd in gpio mode */
+};
+
+&mmc2 {
+	pinctrl-names = "default", "hs";
+	pinctrl-0 = <&mmc2_pins_default>;
+	pinctrl-1 = <&mmc2_pins_hs>;
+};
+
+&qspi {
+	pinctrl-names = "default";
+	pinctrl-0 = <&qspi1_pins_default>;
+};
+
+&mcspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&mcspi1_pins_default>;
+};
+
+&usb1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb1_default>;
+};
+
+&usb2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&usb2_default>;
+};
+
+&led_som_debug {
+	pinctrl-names = "default";
+	pinctrl-0 = <&led_som_debug_default>;
+	gpios = <&gpio7 27 GPIO_ACTIVE_LOW>;
+};

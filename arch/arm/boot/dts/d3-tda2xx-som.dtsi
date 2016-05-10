@@ -1,0 +1,385 @@
+/*
+ * Copyright (C) 2016 D3 Engineering
+ *
+ * Based on am571x-idk.dts
+ * Copyright (C) 2015 Texas Instruments Incorporated
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This file describes PCB-00C008101. It should describe all components located
+ * directly on the SOM board. Additionally, this file should enable a default
+ * set of peripheral busses (i2c, mmc, etc) expected to be used by baseboards.
+ *
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	compatible = "ti,dra7";
+
+	aliases {
+		rtc0 = &rtc;
+	};
+
+	memory {
+		device_type = "memory";
+		reg =  <0x0 0x80000000 0x0 0x80000000>; /* 2 GiB */
+	};
+
+	vmain: fixedregulator-vmain {
+		compatible = "regulator-fixed";
+		regulator-name = "VDD_3V3_IN";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	v3v3: fixedregulator-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "VDD_3V3";
+		vin-supply = <&vmain>;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	vtt_fixed: fixedregulator-vtt {
+		compatible = "regulator-fixed";
+		regulator-name = "vtt_fixed";
+		vin-supply = <&vmain>;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		led_som_debug: led@0 {
+			label = "som_debug";
+			default-state = "off";
+		};
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	clock-frequency = <400000>;
+
+	gpio_exp_som: tca9539@74 {
+		compatible = "ti,tca9539";
+		reg = <0x74>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	eeprom@54 {
+		compatible = "st,24c512";
+		reg = <0x54>;
+		pagesize = <128>;
+	};
+
+	tpm@29 {
+		compatible = "atmel,at97sc3204t";
+		reg = <0x29>;
+	};
+
+	tps659038: tps659038@58 {
+		compatible = "ti,tps659038";
+		reg = <0x58>;
+
+		ti,system-power-controller;
+
+		tps659038_pmic {
+			compatible = "ti,tps659038-pmic";
+			regulators {
+				smps12_reg: smps12 {
+					/* VDD_MPU */
+					vin-supply = <&vmain>;
+					regulator-name = "smps12";
+					regulator-min-microvolt = <850000>;
+					regulator-max-microvolt = <1250000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				smps3_reg: smps3 {
+					/* VDD_DDR EMIF1 EMIF2 */
+					vin-supply = <&vmain>;
+					regulator-name = "smps3";
+					regulator-min-microvolt = <1350000>;
+					regulator-max-microvolt = <1350000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				smps45_reg: smps45 {
+					/* VDD_DSPEVE */
+					vin-supply = <&vmain>;
+					regulator-name = "smps45";
+					regulator-min-microvolt = <850000>;
+					regulator-max-microvolt = <1250000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				smps6_reg: smps6 {
+					/* VDD_CORE */
+					vin-supply = <&vmain>;
+					regulator-name = "smps6";
+					regulator-min-microvolt = <850000>;
+					regulator-max-microvolt = <1060000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				smps7_reg: smps7 {
+					/* VDD_CORE */
+					vin-supply = <&vmain>;
+					regulator-name = "smps7";
+					regulator-min-microvolt = <850000>;
+					regulator-max-microvolt = <1060000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				smps8_reg: smps8 {
+					/* VDD_IVAHD */
+					vin-supply = <&vmain>;
+					regulator-name = "smps8";
+					regulator-min-microvolt = <1050000>;
+					regulator-max-microvolt = <1250000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldo1_reg: ldo1 {
+					/* VDD_MMC1  */
+					vin-supply = <&vmain>;
+					regulator-name = "ldo1";
+					regulator-min-microvolt = <3300000>;
+					regulator-max-microvolt = <3300000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldo3_reg: ldo3 {
+					/* VDD_1V8_PHY */
+					vin-supply = <&vmain>;
+					regulator-name = "ldo3";
+					regulator-min-microvolt = <1800000>;
+					regulator-max-microvolt = <1800000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldo4_reg: ldo4 {
+					/* VDD_1V8_PHYB */
+					vin-supply = <&vmain>;
+					regulator-name = "ldo4";
+					regulator-min-microvolt = <1800000>;
+					regulator-max-microvolt = <1800000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldoln_reg: ldoln {
+					/* VDD_1V8_PLL */
+					vin-supply = <&vmain>;
+					regulator-name = "ldoln";
+					regulator-min-microvolt = <1800000>;
+					regulator-max-microvolt = <1800000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldo9_reg: ldo9 {
+					/* VDD_RTC */
+					regulator-name = "ldo9";
+					regulator-min-microvolt = <1050000>;
+					regulator-max-microvolt = <1050000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldousb_reg: ldousb {
+					/* VDD_3V_USB */
+					vin-supply = <&vmain>;
+					regulator-name = "ldousb";
+					regulator-min-microvolt = <3300000>;
+					regulator-max-microvolt = <3300000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				ldortc_reg: ldortc {
+					/* VRTC_OUT */
+					vin-supply = <&vmain>;
+					regulator-name = "ldortc";
+					regulator-min-microvolt = <1800000>;
+					regulator-max-microvolt = <1800000>;
+					regulator-always-on;
+					regulator-boot-on;
+				};
+
+				regen1: regen1 {
+					/* 3V3_LOGIC_PWR_EN */
+					regulator-name = "regen1";
+					regulator-boot-on;
+					regulator-always-on;
+				};
+
+				regen2: regen2 {
+					/* Needed for PMIC internal resource */
+					regulator-name = "regen2";
+					regulator-boot-on;
+					regulator-always-on;
+				};
+			};
+		};
+
+
+	};
+};
+
+&oppdm_mpu {
+	vdd-supply = <&smps12_reg>;
+};
+
+&oppdm_dspeve {
+	vdd-supply = <&smps45_reg>;
+};
+
+&oppdm_gpu {
+	vdd-supply = <&smps6_reg>;
+};
+
+&oppdm_ivahd {
+	vdd-supply = <&smps8_reg>;
+};
+
+&oppdm_core {
+	vdd-supply = <&smps7_reg>;
+};
+
+&cpu0 {
+	cpu-opp-domain = <&oppdm_mpu>;
+	voltage-tolerance = <1>;
+};
+
+&uart1 {
+	status = "okay";
+	interrupts-extended = <&crossbar_mpu GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
+			      <&dra7_pmx_core 0x3e0>;
+};
+
+&uart3 {
+	status = "okay";
+	interrupts-extended = <&crossbar_mpu GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>,
+			      <&dra7_pmx_core 0x248>;
+};
+
+&mmc1 {
+	status = "okay";
+	vmmc-supply = <&ldo1_reg>;
+	pbias-supply = <&pbias_mmc_reg>;
+	bus-width = <4>;
+};
+
+&mmc2 {
+	status = "okay";
+	/* Populattion option for VDD_SHV = VDD_3V3 (default) or VDD_1V8 */
+	vmmc-supply = <&v3v3>;
+	bus-width = <8>;
+	ti,non-removable;
+	cap-mmc-dual-data-rate;
+};
+
+&qspi {
+	status = "okay";
+	spi-max-frequency = <48000000>;
+
+	m25p80@0 {
+		status = "okay";
+		compatible = "micron,n25q512ax3","jedec,spi-nor";
+		spi-max-frequency = <48000000>;
+		reg = <0>;
+		spi-tx-bus-width = <1>;
+		spi-rx-bus-width = <1>;
+		spi-cpol;
+		spi-cpha;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* MTD partition table.
+		 * The ROM checks the first four physical blocks
+		 * for a valid file to boot and the flash here is
+		 * 64KiB block size.  The partition locations and
+		 * sizes must match the u-boot confirguration.
+		 */
+		partition@0 {
+			label = "QSPI.SPL";
+			reg = <0x00000000 0x000010000>;
+		};
+		partition@1 {
+			label = "QSPI.SPL.backup1";
+			reg = <0x00010000 0x00010000>;
+		};
+		partition@2 {
+			label = "QSPI.SPL.backup2";
+			reg = <0x00020000 0x00010000>;
+		};
+		partition@3 {
+			label = "QSPI.SPL.backup3";
+			reg = <0x00030000 0x00010000>;
+		};
+		partition@4 {
+			label = "QSPI.u-boot";
+			reg = <0x00040000 0x00100000>;
+		};
+		partition@5 {
+			label = "QSPI.u-boot-spl-os";
+			reg = <0x00140000 0x00080000>;
+		};
+		partition@6 {
+			label = "QSPI.u-boot-env";
+			reg = <0x001c0000 0x00010000>;
+		};
+		partition@7 {
+			label = "QSPI.u-boot-env.backup1";
+			reg = <0x001d0000 0x0010000>;
+		};
+	};
+};
+
+&mcspi1 {
+	status = "okay";
+	ti,pindir-d0-out-d1-in = <1>;
+
+	spidev@0 {
+		compatible = "linux,spidev";
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+	};
+
+	spidev@1 {
+		compatible = "linux,spidev";
+		reg = <1>;
+		spi-max-frequency = <10000000>;
+	};
+};
+
+&usb1 {
+	status = "okay";
+	maximum-speed = "super-speed";
+};
+
+&usb2 {
+	status = "okay";
+	maximum-speed = "high-speed";
+};
