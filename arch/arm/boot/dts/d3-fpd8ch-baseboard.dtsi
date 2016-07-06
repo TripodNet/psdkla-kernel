@@ -1,0 +1,595 @@
+/*
+ * Copyright (C) 2016 D3 Engineering
+ *
+ * Based on am571x-idk.dts
+ * Copyright (C) 2015 Texas Instruments Incorporated
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/net/ti-dp83867.h>
+
+/ {
+	aliases {
+		i2c11 = &lvds_des0;
+		i2c12 = &lvds_des1;
+		i2c13 = &lvds_des2;
+		i2c14 = &lvds_des3;
+		i2c15 = &lvds_des4;
+		i2c16 = &lvds_des5;
+		i2c17 = &lvds_des6;
+		i2c18 = &lvds_des7;
+		i2c19 = &disp_ser;
+	};
+
+	hdmi0: connector@1 {
+		compatible = "hdmi-connector";
+		label = "hdmi";
+		type = "c";
+		hpd-gpios = <&gpio_exp_bb 6 GPIO_ACTIVE_HIGH>;
+
+		port {
+			hdmi_connector_in: endpoint {
+				remote-endpoint = <&hdmi_out>;
+			};
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		led_bb_exp_0: led@1 {
+			label = "bb_exp_0";
+			default-state = "off";
+			gpios = <&gpio_exp_bb 4 GPIO_ACTIVE_HIGH>;
+		};
+		led_bb_exp_1: led@2 {
+			label = "bb_exp_1";
+			default-state = "off";
+			gpios = <&gpio_exp_bb 5 GPIO_ACTIVE_HIGH>;
+		};
+		led_user: led@3 {
+			label = "user";
+			default-state = "off";
+			gpios = <&gpio_exp_bb 7 GPIO_ACTIVE_HIGH>;
+		};
+	};
+};
+
+&i2c1 {
+	gpio_exp_bb: tca9539@75 {
+		compatible = "ti,tca9539";
+		reg = <0x75>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+};
+
+&i2c3 {
+	status = "okay";
+	clock-frequency = <100000>;
+
+	disp_ser: serializer@0c {
+		compatible = "ti,ds90uh925q";
+		reg = <0x0c>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;	
+	};
+};
+
+&i2c4 {
+	status = "okay";
+	clock-frequency = <100000>;
+
+	gpio_fpd_expa: tca9539@74 {
+		compatible = "ti,tca9539";
+		reg = <0x74>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	gpio_exp2_bb: tca9539@76 {
+		compatible = "ti,tca9539";
+		reg = <0x76>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	lvds_des0: deserializer@30 {
+		compatible = "ti,ds90ub934q";
+		reg = <0x30>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	lvds_des1: deserializer@32 {
+		compatible = "ti,ds90ub934q";
+		reg = <0x32>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	lvds_des2: deserializer@34 {
+		compatible = "ti,ds90ub934q";
+		reg = <0x34>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	lvds_des3: deserializer@3D {
+		compatible = "ti,ds90ub934q";
+		reg = <0x3D>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+};
+
+&i2c5 {
+	status = "okay";
+	clock-frequency = <100000>;
+
+	gpio_fpd_expb: tca9539@74 {
+		compatible = "ti,tca9539";
+		reg = <0x74>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	lvds_des4: deserializer@30 {
+		compatible = "ti,ds90ub934q";
+		reg = <0x30>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	lvds_des5: deserializer@32 {
+		compatible = "ti,ds90ub934q";
+		reg = <0x32>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	lvds_des6: deserializer@34 {
+		compatible = "ti,ds90ub934q";
+		reg = <0x34>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	lvds_des7: deserializer@3D {
+		compatible = "ti,ds90ub934q";
+		reg = <0x3D>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+};
+
+&mac {
+	status = "okay";
+	slaves = <2>;
+	active_slave = <1>;
+	ti,no-idle;
+};
+
+/* cpsw_emac0 needs to be specified because the cpsw driver
+   indexes which rgmii to use based on slaves attribute of mac,
+   so we need a dummy entry for slave0. */
+&cpsw_emac0 {
+	phy_id = <&davinci_mdio>, <2>;
+	phy-mode = "rgmii-id";
+};
+
+&cpsw_emac1 {
+	phy_id = <&davinci_mdio>, <0>;
+	phy-mode = "rgmii-id";
+};
+
+&davinci_mdio {
+	status = "okay";
+
+	phy0: dp83867@0 {
+		compatible = "ti,dp83867";
+		reg = <0x0>;
+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_750_PS>;
+		ti,tx-internal-delay = <DP83867_RGMIIDCTL_750_PS>;
+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+	};
+};
+
+&dss {
+	status = "okay";
+
+	vdda_video-supply = <&ldoln_reg>;
+
+	port {
+		dpi_out: endpoint {
+			remote-endpoint = <&fpd_in>;
+			data-lines = <24>;
+		};
+	};
+};
+
+&hdmi {
+	status = "okay";
+	vdda-supply = <&ldo3_reg>;
+
+	port {
+		hdmi_out: endpoint {
+			remote-endpoint = <&hdmi_connector_in>;
+			lanes = <1 0 3 2 5 4 7 6>;
+		};
+	};
+};
+
+&disp_ser {
+	ranges = <0x2c 0x2c>;
+
+	disp_des: deserializer@2c {
+		compatible = "ti,ds90uh928q";
+		reg = <0x2c>;
+
+		gpio-controller;
+		#gpio-cells = <1>;
+
+		slave-mode;
+	};
+
+	fpd_disp: display@0 {
+		compatible = "panel-dpi";
+
+		port {
+			fpd_in: endpoint {
+				remote-endpoint = <&dpi_out>;
+			};
+		};
+
+		panel-timing {
+			clock-frequency = <9200000>;
+			hactive = <480>;
+			vactive = <272>;
+			hfront-porch = <8>;
+			hback-porch = <4>;
+			hsync-len = <41>;
+			vback-porch = <2>;
+			vfront-porch = <4>;
+			vsync-len = <10>;
+
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <1>;
+			pixelclk-active = <1>;
+		};
+	};
+};
+
+&dcan1 {
+	status = "okay";
+};
+
+&dcan2 {
+	status = "okay";
+};
+
+&vin1a {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam5>;
+	};
+};
+
+&vin1b {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam6>;
+	};
+};
+
+&vin2a {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam4>;
+	};
+};
+
+&vin3a {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam0>;
+	};
+};
+
+&vin4a {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam1>;
+	};
+};
+
+&vin4b {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam7>;
+	};
+};
+
+&vin5a {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam3>;
+	};
+};
+
+&vin6a {
+	status = "okay";
+
+	endpoint {
+		slave-mode;
+		remote-endpoint = <&cam2>;
+	};
+};
+
+&lvds_des0 {
+	ranges = <0x58 0x60>, /* remote real address, local alias addreass */
+		 <0x30 0x61>;
+
+	lvds_ser0: serializer@60 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des0>;
+
+		slave-mode;
+	};
+
+	lvds_cam0: camera@61 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam0: endpoint {
+				remote-endpoint = <&vin3a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des1 {
+	ranges = <0x58 0x62>, /* remote real address, local alias addreass */
+		 <0x30 0x63>;
+
+	lvds_ser1: serializer@62 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des1>;
+
+		slave-mode;
+	};
+
+	lvds_cam1: camera@63 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam1: endpoint {
+				remote-endpoint = <&vin4a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des2 {
+	ranges = <0x58 0x64>, /* remote real address, local alias addreass */
+		 <0x30 0x65>;
+
+	lvds_ser2: serializer@64 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des2>;
+
+		slave-mode;
+	};
+
+	lvds_cam2: camera@65 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam2: endpoint {
+				remote-endpoint = <&vin6a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des3 {
+	ranges = <0x58 0x68>, /* remote real address, local alias addreass */
+		 <0x30 0x69>;
+
+	lvds_ser3: serializer@68 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des3>;
+
+		slave-mode;
+	};
+
+	lvds_cam3: camera@69 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam3: endpoint {
+				remote-endpoint = <&vin5a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des4 {
+	ranges = <0x58 0x60>, /* remote real address, local alias addreass */
+		 <0x30 0x61>;
+
+	lvds_ser4: serializer@60 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des4>;
+
+		slave-mode;
+	};
+
+	lvds_cam4: camera@61 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam4: endpoint {
+				remote-endpoint = <&vin2a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des5 {
+	ranges = <0x58 0x62>, /* remote real address, local alias addreass */
+		 <0x30 0x63>;
+
+	lvds_ser5: serializer@62 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des5>;
+
+		slave-mode;
+	};
+
+	lvds_cam5: camera@63 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam5: endpoint {
+				remote-endpoint = <&vin1a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des6 {
+	ranges = <0x58 0x64>, /* remote real address, local alias addreass */
+		 <0x30 0x65>;
+
+	lvds_ser6: serializer@64 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des6>;
+
+		slave-mode;
+	};
+
+	lvds_cam6: camera@65 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam6: endpoint {
+				remote-endpoint = <&vin1b>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
+
+&lvds_des7 {
+	ranges = <0x58 0x68>, /* remote real address, local alias addreass */
+		 <0x30 0x69>;
+
+	lvds_ser7: serializer@68 {
+		compatible = "ti,ds90ub913aq";
+		reg = <0x58>;
+		remote-device = <&lvds_des7>;
+
+		slave-mode;
+	};
+
+	lvds_cam7: camera@69 {
+		compatible = "ov10635";
+		reg = <0x30>;
+		export-devnode;
+
+		/* power down pin controlled by serializer local gpio0 */
+
+		port {
+			cam7: endpoint {
+				remote-endpoint = <&vin4b>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <1>;
+			};
+		};
+	};
+};
