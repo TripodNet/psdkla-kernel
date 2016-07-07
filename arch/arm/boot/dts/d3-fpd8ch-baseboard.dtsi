@@ -285,83 +285,127 @@
 &vin1a {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam5>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam5_imi490>;
 	};
 };
 
 &vin1b {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam6>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam6_imi490>;
 	};
 };
 
 &vin2a {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam4>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam4_imi490>;
 	};
 };
 
 &vin3a {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam0>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam0_imi490>;
 	};
 };
 
 &vin4a {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam1>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam1_imi490>;
 	};
 };
 
 &vin4b {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam7>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam7_imi490>;
 	};
 };
 
 &vin5a {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam3>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam3_imi490>;
 	};
 };
 
 &vin6a {
 	status = "okay";
 
-	endpoint {
+	endpoint@0 {
 		slave-mode;
 		remote-endpoint = <&cam2>;
+	};
+
+	endpoint@1 {
+		slave-mode;
+		remote-endpoint = <&cam2_imi490>;
 	};
 };
 
 &lvds_des0 {
-	ranges = <0x58 0x60>, /* remote real address, local alias addreass */
-		 <0x30 0x61>;
+	ranges = <0x58 0x60>, /* remote real address, local alias address */
+		 <0x30 0x61>,
+		 <0x24 0x51>;
 
 	lvds_ser0: serializer@60 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des0>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -370,8 +414,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam0: endpoint {
@@ -382,16 +424,40 @@
 			};
 		};
 	};
+
+	lvds_cam0_imi490: camera_imi490@51 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser0 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam0_imi490: endpoint {
+				remote-endpoint = <&vin3a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des1 {
-	ranges = <0x58 0x62>, /* remote real address, local alias addreass */
-		 <0x30 0x63>;
+	ranges = <0x58 0x62>, /* remote real address, local alias address */
+		 <0x30 0x63>,
+		 <0x24 0x53>;
 
 	lvds_ser1: serializer@62 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des1>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -400,8 +466,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam1: endpoint {
@@ -412,16 +476,40 @@
 			};
 		};
 	};
+
+	lvds_cam1_imi490: camera_imi490@53 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser1 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam1_imi490: endpoint {
+				remote-endpoint = <&vin4a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des2 {
-	ranges = <0x58 0x64>, /* remote real address, local alias addreass */
-		 <0x30 0x65>;
+	ranges = <0x58 0x64>, /* remote real address, local alias address */
+		 <0x30 0x65>,
+		 <0x24 0x55>;
 
 	lvds_ser2: serializer@64 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des2>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -430,8 +518,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam2: endpoint {
@@ -442,16 +528,40 @@
 			};
 		};
 	};
+
+	lvds_cam2_imi490: camera_imi490@55 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser2 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam2_imi490: endpoint {
+				remote-endpoint = <&vin6a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des3 {
-	ranges = <0x58 0x68>, /* remote real address, local alias addreass */
-		 <0x30 0x69>;
+	ranges = <0x58 0x68>, /* remote real address, local alias address */
+		 <0x30 0x69>,
+		 <0x24 0x59>;
 
 	lvds_ser3: serializer@68 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des3>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -460,8 +570,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam3: endpoint {
@@ -472,16 +580,40 @@
 			};
 		};
 	};
+
+	lvds_cam3_imi490: camera_imi490@59 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser3 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam3_imi490: endpoint {
+				remote-endpoint = <&vin5a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des4 {
-	ranges = <0x58 0x60>, /* remote real address, local alias addreass */
-		 <0x30 0x61>;
+	ranges = <0x58 0x60>, /* remote real address, local alias address */
+		 <0x30 0x61>,
+		 <0x24 0x51>;
 
 	lvds_ser4: serializer@60 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des4>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -490,8 +622,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam4: endpoint {
@@ -502,16 +632,40 @@
 			};
 		};
 	};
+
+	lvds_cam4_imi490: camera_imi490@51 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser4 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam4_imi490: endpoint {
+				remote-endpoint = <&vin2a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des5 {
-	ranges = <0x58 0x62>, /* remote real address, local alias addreass */
-		 <0x30 0x63>;
+	ranges = <0x58 0x62>, /* remote real address, local alias address */
+		 <0x30 0x63>,
+		 <0x24 0x53>;
 
 	lvds_ser5: serializer@62 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des5>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -520,8 +674,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam5: endpoint {
@@ -532,16 +684,40 @@
 			};
 		};
 	};
+
+	lvds_cam5_imi490: camera_imi490@53 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser5 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam5_imi490: endpoint {
+				remote-endpoint = <&vin1a>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des6 {
-	ranges = <0x58 0x64>, /* remote real address, local alias addreass */
-		 <0x30 0x65>;
+	ranges = <0x58 0x64>, /* remote real address, local alias address */
+		 <0x30 0x65>,
+		 <0x24 0x55>;
 
 	lvds_ser6: serializer@64 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des6>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -550,8 +726,6 @@
 		compatible = "ov10635";
 		reg = <0x30>;
 		export-devnode;
-
-		/* power down pin controlled by serializer local gpio0 */
 
 		port {
 			cam6: endpoint {
@@ -562,16 +736,40 @@
 			};
 		};
 	};
+
+	lvds_cam6_imi490: camera_imi490@55 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser6 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam6_imi490: endpoint {
+				remote-endpoint = <&vin1b>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
+			};
+		};
+	};
 };
 
 &lvds_des7 {
-	ranges = <0x58 0x68>, /* remote real address, local alias addreass */
-		 <0x30 0x69>;
+	ranges = <0x58 0x68>, /* remote real address, local alias address */
+		 <0x30 0x69>,
+		 <0x24 0x59>;
 
 	lvds_ser7: serializer@68 {
 		compatible = "ti,ds90ub913aq";
 		reg = <0x58>;
 		remote-device = <&lvds_des7>;
+
+		gpio-controller;
+		#gpio-cells = <2>;
 
 		slave-mode;
 	};
@@ -581,14 +779,32 @@
 		reg = <0x30>;
 		export-devnode;
 
-		/* power down pin controlled by serializer local gpio0 */
-
 		port {
 			cam7: endpoint {
 				remote-endpoint = <&vin4b>;
 				hsync-active = <1>;
 				vsync-active = <1>;
 				pclk-sample = <1>;
+			};
+		};
+	};
+
+	lvds_cam7_imi490: camera_imi490@59 {
+		compatible = "ovti,ov490";
+		reg = <0x24>;
+
+		/*
+		   serializer local gpio0 - FSIN
+		   serializer local gpio1 - RESETB - must be high
+		 */
+		mux-gpios = <&lvds_ser7 1 GPIO_ACTIVE_HIGH>;
+
+		port {
+			cam7_imi490: endpoint {
+				remote-endpoint = <&vin4b>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				pclk-sample = <0>;
 			};
 		};
 	};
