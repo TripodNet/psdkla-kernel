@@ -574,10 +574,18 @@ static int dev_load(struct drm_device *dev, unsigned long flags)
 
 	drm_kms_helper_poll_init(dev);
 
+	if (dispc_has_writeback()) {
+		ret = wb_init(dev);
+		if (ret)
+			dev_warn(dev->dev, "failed to initialize writeback\n");
+		else
+			priv->wb_initialized = true;
 	loaded = true;
 
 	list_for_each_entry(plugin, &plugin_list, list) {
 		ret = plugin->load(dev, flags);
+	}
+
 	}
 
 	return 0;
@@ -595,6 +603,9 @@ static int dev_unload(struct drm_device *dev)
 	list_for_each_entry(plugin, &plugin_list, list) {
 		ret = plugin->unload(dev);
 	}
+
+	if (priv->wb_initialized)
+		wb_cleanup(dev);
 
 	drm_kms_helper_poll_fini(dev);
 
