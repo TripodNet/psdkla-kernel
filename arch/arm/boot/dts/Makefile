@@ -247,11 +247,13 @@ dtb-$(CONFIG_ARCH_OMAP2PLUS) += omap2420-h4.dtb \
 	dra7-evm-lcd7-late-attach-no-map.dtb \
 	dra7-evm-vision.dtb \
 	dra72-evm.dtb \
-	dra72-evm-revc.dtb \
 	dra72-evm-lcd7.dtb \
 	dra72-evm-lcd10.dtb \
 	dra72-evm-lcd-osd.dtb \
 	dra72-evm-vision.dtb \
+	dra72-evm-revc.dtb \
+	dra72-evm-revc-lcd-osd101t2045.dtb \
+	dra72-evm-revc-lcd-osd101t2587.dtb \
 	am57xx-beagle-x15.dtb \
 	am57xx-evm.dtb
 
