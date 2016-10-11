@@ -1051,7 +1051,9 @@ static int omap_dma_terminate_all(struct dma_chan *chan)
 	unsigned long flags;
 	LIST_HEAD(head);
 
+	tasklet_disable(&c->vc.task);
 	spin_lock_irqsave(&c->vc.lock, flags);
+	vchan_terminate(&c->vc);
 
 	/* Prevent this channel being scheduled */
 	spin_lock(&d->lock);
@@ -1079,6 +1081,7 @@ static int omap_dma_terminate_all(struct dma_chan *chan)
 	vchan_get_all_descriptors(&c->vc, &head);
 	spin_unlock_irqrestore(&c->vc.lock, flags);
 	vchan_dma_desc_free_list(&c->vc, &head);
+	tasklet_enable(&c->vc.task);
 
 	return 0;
 }
