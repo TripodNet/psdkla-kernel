@@ -91,8 +91,8 @@
 #define VIP_VIN2A		(0x0 << 1)
 #define VIP_VIN4A		(0x1 << 1)
 
-#define VIP_VIN3B		(0x0 << 0)
-#define VIP_VIN2B		(0x1 << 0)
+#define VIP_VIN3B		(0x1 << 0)
+#define VIP_VIN2B		(0x0 << 0)
 
 #endif
 
