@@ -917,7 +917,7 @@ static inline void mmd_phy_indirect(struct mii_bus *bus, int prtad, int devad,
  * 3) Write reg 13 // MMD Data Command for MMD DEVAD
  * 3) Read  reg 14 // Read MMD data
  */
-static int phy_read_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
+int phy_read_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
 				 int addr)
 {
 	mmd_phy_indirect(bus, prtad, devad, addr);
@@ -925,6 +925,7 @@ static int phy_read_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
 	/* Read the content of the MMD's selected register */
 	return bus->read(bus, addr, MII_MMD_DATA);
 }
+EXPORT_SYMBOL(phy_read_mmd_indirect);
 
 /**
  * phy_write_mmd_indirect - writes data to the MMD registers
@@ -942,7 +943,7 @@ static int phy_read_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
  * 3) Write reg 13 // MMD Data Command for MMD DEVAD
  * 3) Write reg 14 // Write MMD data
  */
-static void phy_write_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
+void phy_write_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
 				   int addr, u32 data)
 {
 	mmd_phy_indirect(bus, prtad, devad, addr);
@@ -950,6 +951,7 @@ static void phy_write_mmd_indirect(struct mii_bus *bus, int prtad, int devad,
 	/* Write the data into MMD's selected register */
 	bus->write(bus, addr, MII_MMD_DATA, data);
 }
+EXPORT_SYMBOL(phy_write_mmd_indirect);
 
 /**
  * phy_init_eee - init and check the EEE feature
