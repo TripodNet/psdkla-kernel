@@ -254,7 +254,7 @@ dtb-$(CONFIG_ARCH_OMAP2PLUS) += omap2420-h4.dtb \
 	dra72-evm-revc.dtb \
 	dra72-evm-revc-lcd-osd101t2045.dtb \
 	dra72-evm-revc-lcd-osd101t2587.dtb \
-	am57xx-beagle-x15.dtb \
+	dra71-evm.dtb\
 	am57xx-evm.dtb
 
 dtb-$(CONFIG_ARCH_ORION5X) += orion5x-lacie-ethernet-disk-mini-v2.dtb
