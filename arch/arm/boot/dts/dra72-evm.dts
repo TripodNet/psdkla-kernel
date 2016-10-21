@@ -53,15 +53,19 @@
 
 };
 
-&tps65917_regulators {
-	ldo2_reg: ldo2 {
-		/* LDO2_OUT --> TP1017 (UNUSED)  */
-		regulator-name = "ldo2";
-		regulator-min-microvolt = <1800000>;
-		regulator-max-microvolt = <3300000>;
-		regulator-allow-bypass;
+&i2c1 {
+	tps65917: tps65917@58 {
+		reg = <0x58>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&tps65917_pins_default>;
+		interrupts-extended = <&gic GIC_SPI 2 IRQ_TYPE_NONE
+					&dra7_pmx_core 0x424>;
+		interrupt-parent = <&gic>;
 	};
 };
+
+#include "dra72-evm-tps65917.dtsi"
 
 &dra7_pmx_core {
 	tps65917_pins_default: tps65917_pins_default {
@@ -317,10 +321,6 @@
 			0x364 (A_DELAY(1039) | G_DELAY(0))	/* CFG_GPMC_CS1_OEN */
 		>;
 	};
-};
-
-&hdmi {
-	vdda_video-supply = <&ldo5_reg>;
 };
 
 &pcf_gpio_21 {
