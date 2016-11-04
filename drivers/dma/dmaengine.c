@@ -261,8 +261,13 @@ static void dma_chan_put(struct dma_chan *chan)
 		return; /* this channel failed alloc_chan_resources */
 	chan->client_count--;
 	module_put(dma_chan_to_owner(chan));
-	if (chan->client_count == 0)
+
+	/* This channel is not in use anymore, free it */
+	if (!chan->client_count && chan->device->device_free_chan_resources) {
+		/* Make sure all operations have completed */
+		dmaengine_synchronize(chan);
 		chan->device->device_free_chan_resources(chan);
+	}
 
 	/* If the channel is used via a DMA request router, free the mapping */
 	if (chan->router && chan->router->route_free) {
