@@ -281,6 +281,9 @@
 		reg = <0x20>;
 		gpio-controller;
 		#gpio-cells = <2>;
+
+		interrupt-controller;
+		#interrupt-cells = <2>;
 	};
 
 	pcf_lcd_tc3587x: gpio@27 {
