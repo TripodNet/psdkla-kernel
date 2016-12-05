@@ -72,7 +72,7 @@ static int pbias_regulator_get_voltage(struct regulator_dev *rdev)
 	regmap_read(data->syscon, data->pbias_reg, &value);
 	value &= info->vmode;
 
-	voltage = value ? 3000000 : 1800000;
+	voltage = value ? 3300000 : 1800000;
 
 	return voltage;
 }
