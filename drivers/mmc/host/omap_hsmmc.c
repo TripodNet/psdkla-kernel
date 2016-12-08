@@ -178,7 +178,7 @@
 #define DRIVER_NAME		"omap_hsmmc"
 
 #define VDD_1V8			1800000		/* 180000 uV */
-#define VDD_3V0			3000000		/* 300000 uV */
+#define VDD_3V3			3300000		/* 330000 uV */
 #define VDD_165_195		(ffs(MMC_VDD_165_195) - 1)
 
 #define EMMC_HSDDR_SD_SDR25_MAX	52000000
@@ -450,7 +450,7 @@ static int omap_hsmmc_set_power(struct device *dev, int slot, int power_on,
 			if (!ret)
 				host->pbias_enabled = 0;
 		}
-		regulator_set_voltage(host->pbias, VDD_3V0, VDD_3V0);
+		regulator_set_voltage(host->pbias, VDD_3V3, VDD_3V3);
 	}
 
 	/*
@@ -492,7 +492,7 @@ static int omap_hsmmc_set_power(struct device *dev, int slot, int power_on,
 				ac12 |= V1V8_SIGEN;
 			} else {
 				ret = regulator_set_voltage(host->vcc_aux,
-							    VDD_3V0, VDD_3V0);
+							    VDD_3V3, VDD_3V3);
 				if (ret < 0)
 					goto error_set_power;
 				ac12 &= ~V1V8_SIGEN;
@@ -530,8 +530,8 @@ static int omap_hsmmc_set_power(struct device *dev, int slot, int power_on,
 			ret = regulator_set_voltage(host->pbias, VDD_1V8,
 								VDD_1V8);
 		else
-			ret = regulator_set_voltage(host->pbias, VDD_3V0,
-								VDD_3V0);
+			ret = regulator_set_voltage(host->pbias, VDD_3V3,
+								VDD_3V3);
 		if (ret < 0)
 			goto error_set_power;
 
