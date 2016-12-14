@@ -64,12 +64,21 @@ static inline u32 pll_read_reg(void __iomem *base_addr, const u16 idx)
 static inline int wait_for_bit_change(void __iomem *base, const u16 offset,
 		int bitnum, int value)
 {
+	unsigned long timeout;
 	int t = 100;
 
 	while (t-- > 0) {
 		if (REG_GET(base, offset, bitnum, bitnum) == value)
 			return value;
 		udelay(1);
+	}
+
+	/* then loop for 500ms, sleeping for 1ms in between */
+	timeout = jiffies + msecs_to_jiffies(500);
+	while (time_before(jiffies, timeout)) {
+		if (REG_GET(base, offset, bitnum, bitnum) == value)
+			return value;
+		msleep(1);
 	}
 
 	return !value;
