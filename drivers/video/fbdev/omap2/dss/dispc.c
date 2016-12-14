@@ -3365,7 +3365,8 @@ struct pll_data *dispc_pll_data_find_by_src(enum omap_dss_clk_source src)
 	case DSS_CLK_SRC_PLL2_1:
 	case DSS_CLK_SRC_PLL2_2:
 	case DSS_CLK_SRC_PLL2_3:
-		pll_index = 1;
+		if (omapdss_get_version() != OMAPDSS_VER_DRA72xx)
+			pll_index = 1;
 	default:
 		break;
 	}
