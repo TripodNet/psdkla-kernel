@@ -542,6 +542,30 @@ static struct pll_features omap54xx_pll_features = {
 	.bound_dcofreq = true,
 };
 
+static struct pll_features dra7_video_pll_features = {
+	.regn_max = (1 << 8) - 1,
+	.regm_max = (1 << 12) - 1,
+	.regm_hsdiv_max = (1 << 5) - 1,
+	.fint_min = 500000,
+	.fint_max = 2500000,
+	.clkout_max = 1800000000,
+	.dco_range1_min = 750000000UL,
+	.dco_range1_max = 1500000000UL,
+	.dco_range2_min = 1250000000UL,
+	.dco_range2_max = 2500000000UL,
+	.regm_start = 20,
+	.regm_end = 9,
+	.regn_start = 8,
+	.regn_end = 1,
+	.regm_hsdiv_start = { 25, 30, 4, 9 },
+	.regm_hsdiv_end = { 21, 26, 0, 5 },
+	.freqsel = false,
+	.refsel = true,
+	.sysreset_fsm = true,
+	.selfreqdco = false,
+	.bound_dcofreq = true,
+};
+
 static int __init pll_init_features(struct pll_data *pll)
 {
 
@@ -563,9 +587,11 @@ static int __init pll_init_features(struct pll_data *pll)
 		break;
 
 	case OMAPDSS_VER_OMAP5:
+		pll->feats = &omap54xx_pll_features;
+		break;
 	case OMAPDSS_VER_DRA74xx:
 	case OMAPDSS_VER_DRA72xx:
-		pll->feats = &omap54xx_pll_features;
+		pll->feats = &dra7_video_pll_features;
 		break;
 
 	case OMAPDSS_VER_OMAP24xx:
