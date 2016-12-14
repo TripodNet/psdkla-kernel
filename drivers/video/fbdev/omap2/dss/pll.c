@@ -317,7 +317,7 @@ bool pll_calc(struct pll_data *pll, unsigned long clkout_min,
 
 	clkout_max = clkout_max ? clkout_max : ULONG_MAX;
 
-	for (regn = regn_start; regn <= regn_stop; ++regn) {
+	for (regn = regn_stop; regn >= regn_start; --regn) {
 		fint = clkin / regn;
 
 		regm_start = max(DIV_ROUND_UP(DIV_ROUND_UP(clkout_min, fint),
@@ -326,7 +326,7 @@ bool pll_calc(struct pll_data *pll, unsigned long clkout_min,
 				clkout_hw_max / fint / 2,
 				feats->regm_max);
 
-		for (regm = regm_start; regm <= regm_stop; ++regm) {
+		for (regm = regm_stop; regm >= regm_start; --regm) {
 			clkout = 2 * regm * fint;
 
 			if (func(regn, regm, fint, clkout, data))
