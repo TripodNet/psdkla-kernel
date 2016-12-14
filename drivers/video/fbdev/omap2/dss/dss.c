@@ -102,9 +102,11 @@ static struct {
 static const char * const dss_generic_clk_source_names[] = {
 	[DSS_CLK_SRC_PLL1_1]	= "DSI_PLL_HSDIV_DISPC",
 	[DSS_CLK_SRC_PLL1_2]	= "DSI_PLL_HSDIV_DSI",
+	[DSS_CLK_SRC_PLL1_3]	= "DSI_PLL1_HSDIV_3",
 	[DSS_CLK_SRC_FCK]			= "DSS_FCK",
 	[DSS_CLK_SRC_PLL2_1]	= "DSI_PLL2_HSDIV_DISPC",
 	[DSS_CLK_SRC_PLL2_2]	= "DSI_PLL2_HSDIV_DSI",
+	[DSS_CLK_SRC_PLL2_3]	= "DSI_PLL2_HSDIV_3",
 };
 
 static inline void dss_write_reg(const struct dss_reg idx, u32 val)

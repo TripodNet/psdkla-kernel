@@ -392,29 +392,37 @@ static const enum omap_overlay_caps omap4_dss_overlay_caps[] = {
 static const char * const omap2_dss_clk_source_names[] = {
 	[DSS_CLK_SRC_PLL1_1]	= "N/A",
 	[DSS_CLK_SRC_PLL1_2]	= "N/A",
+	[DSS_CLK_SRC_PLL1_3]	= "N/A",
 	[DSS_CLK_SRC_FCK]			= "DSS_FCLK1",
 };
 
 static const char * const omap3_dss_clk_source_names[] = {
 	[DSS_CLK_SRC_PLL1_1]	= "DSI1_PLL_FCLK",
 	[DSS_CLK_SRC_PLL1_2]	= "DSI2_PLL_FCLK",
+	[DSS_CLK_SRC_PLL1_3]	= "N/A",
 	[DSS_CLK_SRC_FCK]			= "DSS1_ALWON_FCLK",
 };
 
 static const char * const omap4_dss_clk_source_names[] = {
 	[DSS_CLK_SRC_PLL1_1]	= "PLL1_CLK1",
 	[DSS_CLK_SRC_PLL1_2]	= "PLL1_CLK2",
+	[DSS_CLK_SRC_PLL1_3]	= "N/A",
 	[DSS_CLK_SRC_FCK]			= "DSS_FCLK",
 	[DSS_CLK_SRC_PLL2_1]	= "PLL2_CLK1",
 	[DSS_CLK_SRC_PLL2_2]	= "PLL2_CLK2",
+	[DSS_CLK_SRC_PLL2_3]	= "N/A",
 };
 
 static const char * const omap5_dss_clk_source_names[] = {
 	[DSS_CLK_SRC_PLL1_1]	= "DPLL_DSI1_A_CLK1",
 	[DSS_CLK_SRC_PLL1_2]	= "DPLL_DSI1_A_CLK2",
+	[DSS_CLK_SRC_PLL1_3]	= "DPLL_DSI1_A_CLK3",
+
 	[DSS_CLK_SRC_FCK]			= "DSS_CLK",
 	[DSS_CLK_SRC_PLL2_1]	= "DPLL_DSI1_C_CLK1",
 	[DSS_CLK_SRC_PLL2_2]	= "DPLL_DSI1_C_CLK2",
+	[DSS_CLK_SRC_PLL2_3]	= "DPLL_DSI1_C_CLK3",
+
 };
 
 static const struct dss_param_range omap2_dss_param_range[] = {

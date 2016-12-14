@@ -224,8 +224,11 @@ enum omap_dss_clk_source {
 				 * OMAP4: PLL1_CLK1 */
 	DSS_CLK_SRC_PLL1_2,	/* OMAP3: DSI2_PLL_FCLK
 				 * OMAP4: PLL1_CLK2 */
+	DSS_CLK_SRC_PLL1_3,	/* DRA7x: PLL1 CLK3 */
+
 	DSS_CLK_SRC_PLL2_1,	/* OMAP4: PLL2_CLK1 */
 	DSS_CLK_SRC_PLL2_2,	/* OMAP4: PLL2_CLK2 */
+	DSS_CLK_SRC_PLL2_3,	/* DRA7x: PLL2 CLK3 */
 };
 
 enum omap_hdmi_flags {
