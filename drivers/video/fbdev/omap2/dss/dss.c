@@ -417,11 +417,15 @@ void dss_select_dsi_clk_source(int dsi_module,
 	case DSS_CLK_SRC_FCK:
 		b = 0;
 		break;
+	case DSS_CLK_SRC_PLL1_1:
 	case DSS_CLK_SRC_PLL1_2:
+	case DSS_CLK_SRC_PLL1_3:
 		BUG_ON(dsi_module != 0);
 		b = 1;
 		break;
+	case DSS_CLK_SRC_PLL2_1:
 	case DSS_CLK_SRC_PLL2_2:
+	case DSS_CLK_SRC_PLL2_3:
 		BUG_ON(dsi_module != 1);
 		b = 1;
 		break;
@@ -451,10 +455,14 @@ void dss_select_lcd_clk_source(enum omap_channel channel,
 		b = 0;
 		break;
 	case DSS_CLK_SRC_PLL1_1:
+	case DSS_CLK_SRC_PLL1_2:
+	case DSS_CLK_SRC_PLL1_3:
 		BUG_ON(channel != OMAP_DSS_CHANNEL_LCD);
 		b = 1;
 		break;
 	case DSS_CLK_SRC_PLL2_1:
+	case DSS_CLK_SRC_PLL2_2:
+	case DSS_CLK_SRC_PLL2_3:
 		BUG_ON(channel != OMAP_DSS_CHANNEL_LCD2 &&
 		       channel != OMAP_DSS_CHANNEL_LCD3);
 		b = 1;
