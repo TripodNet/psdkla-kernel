@@ -3384,28 +3384,27 @@ static unsigned long dispc_fclk_rate(void)
 {
 	struct pll_data *pll;
 	unsigned long r = 0;
+	enum omap_dss_clk_source src;
 
-	switch (dss_get_dispc_clk_source()) {
+	src = dss_get_dispc_clk_source();
+	switch (src) {
 	case DSS_CLK_SRC_FCK:
 		r = dss_get_dispc_clk_rate();
 		break;
 
 	case DSS_CLK_SRC_PLL1_1:
-		if (dispc.feat->alt_clk_dsi_pll)
-			pll = dsi_get_pll_data_from_id(0);
-		else
-			pll = dss_dpll_get_pll_data(0);
-
-		r = pll_get_hsdiv_rate(pll, 0);
-		break;
-
+	case DSS_CLK_SRC_PLL1_2:
+	case DSS_CLK_SRC_PLL1_3:
 	case DSS_CLK_SRC_PLL2_1:
-		if (dispc.feat->alt_clk_dsi_pll)
-			pll = dsi_get_pll_data_from_id(1);
-		else
-			pll = dss_dpll_get_pll_data(1);
-
-		r = pll_get_hsdiv_rate(pll, 0);
+	case DSS_CLK_SRC_PLL2_2:
+	case DSS_CLK_SRC_PLL2_3:
+		pll = dispc_pll_data_find_by_src(src);
+		if (!pll) {
+			pr_err("%s Couldn't get the PLL data for clock source %d\n",
+			       __func__, src);
+			return 0;
+		}
+		r = pll_get_hsdiv_rate(pll, hsdiv_index_from_src(src));
 		break;
 
 	default:
@@ -3423,31 +3422,30 @@ static unsigned long dispc_mgr_lclk_rate(enum omap_channel channel)
 	u32 l;
 
 	if (dss_mgr_is_lcd(channel)) {
+		enum omap_dss_clk_source src;
 		l = dispc_read_reg(DISPC_DIVISORo(channel));
 
 		lcd = FLD_GET(l, 23, 16);
 
-		switch (dss_get_lcd_clk_source(channel)) {
+		src = dss_get_lcd_clk_source(channel);
+		switch (src) {
 		case DSS_CLK_SRC_FCK:
 			r = dss_get_dispc_clk_rate();
 			break;
 
 		case DSS_CLK_SRC_PLL1_1:
-			if (dispc.feat->alt_clk_dsi_pll)
-				pll = dsi_get_pll_data_from_id(0);
-			else
-				pll = dss_dpll_get_pll_data(0);
-
-			r = pll_get_hsdiv_rate(pll, 0);
-			break;
-
+		case DSS_CLK_SRC_PLL1_2:
+		case DSS_CLK_SRC_PLL1_3:
 		case DSS_CLK_SRC_PLL2_1:
-			if (dispc.feat->alt_clk_dsi_pll)
-				pll = dsi_get_pll_data_from_id(1);
-			else
-				pll = dss_dpll_get_pll_data(1);
-
-			r = pll_get_hsdiv_rate(pll, 0);
+		case DSS_CLK_SRC_PLL2_2:
+		case DSS_CLK_SRC_PLL2_3:
+			pll = dispc_pll_data_find_by_src(src);
+			if (!pll) {
+				pr_err("%s Couldn't get the PLL data for clock source %d\n",
+				       __func__, src);
+				return 0;
+			}
+			r = pll_get_hsdiv_rate(pll, hsdiv_index_from_src(src));
 			break;
 
 		default:
