@@ -19,6 +19,7 @@
 #include <linux/workqueue.h>
 
 struct device;
+struct device_node;
 /*
  * LED Core
  */
@@ -90,6 +91,9 @@ extern int led_classdev_register(struct device *parent,
 extern void led_classdev_unregister(struct led_classdev *led_cdev);
 extern void led_classdev_suspend(struct led_classdev *led_cdev);
 extern void led_classdev_resume(struct led_classdev *led_cdev);
+
+extern struct led_classdev *of_led_get(struct device_node *np);
+extern void led_put(struct led_classdev *led_cdev);
 
 /**
  * led_blink_set - set blinking with software fallback
