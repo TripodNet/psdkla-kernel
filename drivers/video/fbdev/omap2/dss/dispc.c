@@ -3357,11 +3357,11 @@ static unsigned long dispc_fclk_rate(void)
 	unsigned long r = 0;
 
 	switch (dss_get_dispc_clk_source()) {
-	case OMAP_DSS_CLK_SRC_FCK:
+	case DSS_CLK_SRC_FCK:
 		r = dss_get_dispc_clk_rate();
 		break;
 
-	case OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC:
+	case DSS_CLK_SRC_PLL1_1:
 		if (dispc.feat->alt_clk_dsi_pll)
 			pll = dsi_get_pll_data_from_id(0);
 		else
@@ -3370,7 +3370,7 @@ static unsigned long dispc_fclk_rate(void)
 		r = pll_get_hsdiv_rate(pll, 0);
 		break;
 
-	case OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC:
+	case DSS_CLK_SRC_PLL2_1:
 		if (dispc.feat->alt_clk_dsi_pll)
 			pll = dsi_get_pll_data_from_id(1);
 		else
@@ -3399,11 +3399,11 @@ static unsigned long dispc_mgr_lclk_rate(enum omap_channel channel)
 		lcd = FLD_GET(l, 23, 16);
 
 		switch (dss_get_lcd_clk_source(channel)) {
-		case OMAP_DSS_CLK_SRC_FCK:
+		case DSS_CLK_SRC_FCK:
 			r = dss_get_dispc_clk_rate();
 			break;
 
-		case OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC:
+		case DSS_CLK_SRC_PLL1_1:
 			if (dispc.feat->alt_clk_dsi_pll)
 				pll = dsi_get_pll_data_from_id(0);
 			else
@@ -3412,7 +3412,7 @@ static unsigned long dispc_mgr_lclk_rate(enum omap_channel channel)
 			r = pll_get_hsdiv_rate(pll, 0);
 			break;
 
-		case OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC:
+		case DSS_CLK_SRC_PLL2_1:
 			if (dispc.feat->alt_clk_dsi_pll)
 				pll = dsi_get_pll_data_from_id(1);
 			else

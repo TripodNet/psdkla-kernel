@@ -142,15 +142,15 @@ static enum omap_dss_clk_source dpi_get_alt_clk_src(enum omap_channel channel)
 {
 	switch (channel) {
 	case OMAP_DSS_CHANNEL_LCD:
-		return OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC;
+		return DSS_CLK_SRC_PLL1_1;
 	case OMAP_DSS_CHANNEL_LCD2:
-		return OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC;
+		return DSS_CLK_SRC_PLL2_1;
 	case OMAP_DSS_CHANNEL_LCD3:
-		return OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC;
+		return DSS_CLK_SRC_PLL2_1;
 	default:
 		/* this shouldn't happen */
 		WARN_ON(1);
-		return OMAP_DSS_CLK_SRC_FCK;
+		return DSS_CLK_SRC_FCK;
 	}
 }
 
@@ -482,7 +482,7 @@ static void dpi_display_disable(struct omap_dss_device *dssdev)
 	dss_mgr_disable(mgr);
 
 	if (pll) {
-		dss_select_lcd_clk_source(mgr->id, OMAP_DSS_CLK_SRC_FCK);
+		dss_select_lcd_clk_source(mgr->id, DSS_CLK_SRC_FCK);
 		pll->ops->disable(pll);
 	}
 
