@@ -457,7 +457,8 @@ void dss_select_lcd_clk_source(enum omap_channel channel,
 	case DSS_CLK_SRC_PLL1_1:
 	case DSS_CLK_SRC_PLL1_2:
 	case DSS_CLK_SRC_PLL1_3:
-		BUG_ON(channel != OMAP_DSS_CHANNEL_LCD);
+		BUG_ON(channel != OMAP_DSS_CHANNEL_LCD &&
+		       channel != OMAP_DSS_CHANNEL_LCD3);
 		b = 1;
 		break;
 	case DSS_CLK_SRC_PLL2_1:
