@@ -355,7 +355,7 @@ int pll_set_clock_div(struct pll_data *pll, struct pll_params *params)
 	/* PLL_REGM */
 	l = FLD_MOD(l, params->regm, feats->regm_start, feats->regm_end);
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 2; i++) {
 		if (params->hsdiv_enabled[i])
 			l = FLD_MOD(l, params->regm_hsdiv[i] > 0 ?
 				params->regm_hsdiv[i] - 1 : 0,
@@ -394,7 +394,7 @@ int pll_set_clock_div(struct pll_data *pll, struct pll_params *params)
 	pll_write_reg(pll->base, PLL_CONFIGURATION2, l);
 
 	l = pll_read_reg(pll->base, PLL_CONFIGURATION3);
-	for (i = 2; i <= 3; i++) {
+	for (i = 2; i < 4; i++) {
 		if (params->hsdiv_enabled[i])
 			l = FLD_MOD(l, params->regm_hsdiv[i] > 0 ?
 				params->regm_hsdiv[i] - 1 : 0,
