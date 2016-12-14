@@ -3351,6 +3351,35 @@ static void dispc_mgr_get_lcd_divisor(enum omap_channel channel, int *lck_div,
 	*pck_div = FLD_GET(l, 7, 0);
 }
 
+
+struct pll_data *dispc_pll_data_find_by_src(enum omap_dss_clk_source src)
+{
+	int pll_index = -1;
+	switch (src) {
+	case DSS_CLK_SRC_PLL1_1:
+	case DSS_CLK_SRC_PLL1_2:
+	case DSS_CLK_SRC_PLL1_3:
+		pll_index = 0;
+		break;
+
+	case DSS_CLK_SRC_PLL2_1:
+	case DSS_CLK_SRC_PLL2_2:
+	case DSS_CLK_SRC_PLL2_3:
+		pll_index = 1;
+	default:
+		break;
+	}
+
+	if (pll_index < 0)
+		return NULL;
+
+	if (dispc.feat->alt_clk_dsi_pll)
+		return dsi_get_pll_data_from_id(pll_index);
+	else
+		return dss_dpll_get_pll_data(pll_index);
+
+}
+
 static unsigned long dispc_fclk_rate(void)
 {
 	struct pll_data *pll;
