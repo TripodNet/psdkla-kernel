@@ -1252,7 +1252,7 @@ static unsigned long dsi_fclk_rate(struct platform_device *dsidev)
 	unsigned long r;
 	struct dsi_data *dsi = dsi_get_dsidrv_data(dsidev);
 
-	if (dss_get_dsi_clk_source(dsi->module_id) == OMAP_DSS_CLK_SRC_FCK) {
+	if (dss_get_dsi_clk_source(dsi->module_id) == DSS_CLK_SRC_FCK) {
 		/* DSI FCLK source is DSS_CLK_FCK */
 		r = clk_get_rate(dsi->dss_clk);
 	} else {
@@ -1400,14 +1400,14 @@ static int dsi_pll_set_clock_div(struct platform_device *dsidev,
 
 	DSSDBG("regm_dispc = %d, %s (%s) = %lu\n",
 		cinfo->params.regm_hsdiv[HSDIV_DISPC],
-		dss_get_generic_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC),
-		dss_feat_get_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC),
+		dss_get_generic_clk_source_name(DSS_CLK_SRC_PLL1_1),
+		dss_feat_get_clk_source_name(DSS_CLK_SRC_PLL1_1),
 		cinfo->params.clkout_hsdiv[HSDIV_DISPC]);
 
 	DSSDBG("regm_dsi = %d, %s (%s) = %lu\n",
 		cinfo->params.regm_hsdiv[HSDIV_DSI],
-		dss_get_generic_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI),
-		dss_feat_get_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI),
+		dss_get_generic_clk_source_name(DSS_CLK_SRC_PLL1_2),
+		dss_feat_get_clk_source_name(DSS_CLK_SRC_PLL1_2),
 		cinfo->params.clkout_hsdiv[HSDIV_DSI]);
 
 	cinfo->params.hsdiv_enabled[HSDIV_DISPC] = true;
@@ -1541,20 +1541,20 @@ static void dsi_dump_dsidev_clocks(struct platform_device *dsidev,
 
 	seq_printf(s,	"DSI_PLL_HSDIV_DISPC (%s)\t%-16luregm_dispc %u\t(%s)\n",
 			dss_feat_get_clk_source_name(dsi_module == 0 ?
-				OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC :
-				OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC),
+				DSS_CLK_SRC_PLL1_1 :
+				DSS_CLK_SRC_PLL2_1),
 			cinfo->params.clkout_hsdiv[HSDIV_DISPC],
 			cinfo->params.regm_hsdiv[HSDIV_DISPC],
-			dispc_clk_src == OMAP_DSS_CLK_SRC_FCK ?
+			dispc_clk_src == DSS_CLK_SRC_FCK ?
 			"off" : "on");
 
 	seq_printf(s,	"DSI_PLL_HSDIV_DSI (%s)\t%-16luregm_dsi %u\t(%s)\n",
 			dss_feat_get_clk_source_name(dsi_module == 0 ?
-				OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI :
-				OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DSI),
+				DSS_CLK_SRC_PLL1_2 :
+				DSS_CLK_SRC_PLL2_2),
 			cinfo->params.clkout_hsdiv[HSDIV_DSI],
 			cinfo->params.regm_hsdiv[HSDIV_DSI],
-			dsi_clk_src == OMAP_DSS_CLK_SRC_FCK ?
+			dsi_clk_src == DSS_CLK_SRC_FCK ?
 			"off" : "on");
 
 	seq_printf(s,	"- DSI%d -\n", dsi_module + 1);
@@ -4141,8 +4141,8 @@ static int dsi_display_init_dispc(struct platform_device *dsidev,
 
 	dsi_wait_pll_hsdiv_dispc_active(dsidev);
 	dss_select_lcd_clk_source(mgr->id, dsi->module_id == 0 ?
-			OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC :
-			OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC);
+			DSS_CLK_SRC_PLL1_1 :
+			DSS_CLK_SRC_PLL2_1);
 
 	if (dsi->mode == OMAP_DSS_DSI_CMD_MODE) {
 		r = dss_mgr_register_framedone_handler(mgr,
@@ -4189,7 +4189,7 @@ err1:
 		dss_mgr_unregister_framedone_handler(mgr,
 				dsi_framedone_irq_callback, dsidev);
 err:
-	dss_select_lcd_clk_source(mgr->id, OMAP_DSS_CLK_SRC_FCK);
+	dss_select_lcd_clk_source(mgr->id, DSS_CLK_SRC_FCK);
 	return r;
 }
 
@@ -4202,7 +4202,7 @@ static void dsi_display_uninit_dispc(struct platform_device *dsidev,
 		dss_mgr_unregister_framedone_handler(mgr,
 				dsi_framedone_irq_callback, dsidev);
 
-	dss_select_lcd_clk_source(mgr->id, OMAP_DSS_CLK_SRC_FCK);
+	dss_select_lcd_clk_source(mgr->id, DSS_CLK_SRC_FCK);
 }
 
 static int dsi_configure_dsi_clocks(struct platform_device *dsidev)
@@ -4243,8 +4243,8 @@ static int dsi_display_init_dsi(struct platform_device *dsidev)
 
 	dsi_wait_pll_hsdiv_dsi_active(dsidev);
 	dss_select_dsi_clk_source(dsi->module_id, dsi->module_id == 0 ?
-			OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI :
-			OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DSI);
+			DSS_CLK_SRC_PLL1_2 :
+			DSS_CLK_SRC_PLL2_2);
 
 	DSSDBG("PLL OK\n");
 
@@ -4276,7 +4276,7 @@ static int dsi_display_init_dsi(struct platform_device *dsidev)
 err3:
 	dsi_cio_uninit(dsidev);
 err2:
-	dss_select_dsi_clk_source(dsi->module_id, OMAP_DSS_CLK_SRC_FCK);
+	dss_select_dsi_clk_source(dsi->module_id, DSS_CLK_SRC_FCK);
 err1:
 	dsi_pll_uninit(dsidev, true);
 err0:
@@ -4298,7 +4298,7 @@ static void dsi_display_uninit_dsi(struct platform_device *dsidev,
 	dsi_vc_enable(dsidev, 2, 0);
 	dsi_vc_enable(dsidev, 3, 0);
 
-	dss_select_dsi_clk_source(dsi->module_id, OMAP_DSS_CLK_SRC_FCK);
+	dss_select_dsi_clk_source(dsi->module_id, DSS_CLK_SRC_FCK);
 	dsi_cio_uninit(dsidev);
 	dsi_pll_uninit(dsidev, disconnect_lanes);
 }
@@ -5004,8 +5004,8 @@ static void dsi_wait_pll_hsdiv_dispc_active(struct platform_device *dsidev)
 
 	if (pll_wait_hsdiv_active(dsi->pll, HSDIV_DISPC))
 		DSSERR("%s (%s) not active\n",
-			dss_get_generic_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC),
-			dss_feat_get_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC));
+			dss_get_generic_clk_source_name(DSS_CLK_SRC_PLL1_1),
+			dss_feat_get_clk_source_name(DSS_CLK_SRC_PLL1_1));
 }
 
 static void dsi_wait_pll_hsdiv_dsi_active(struct platform_device *dsidev)
@@ -5014,8 +5014,8 @@ static void dsi_wait_pll_hsdiv_dsi_active(struct platform_device *dsidev)
 
 	if (pll_wait_hsdiv_active(dsi->pll, HSDIV_DSI))
 		DSSERR("%s (%s) not active\n",
-			dss_get_generic_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI),
-			dss_feat_get_clk_source_name(OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI));
+			dss_get_generic_clk_source_name(DSS_CLK_SRC_PLL1_2),
+			dss_feat_get_clk_source_name(DSS_CLK_SRC_PLL1_2));
 }
 
 static void dsi_calc_clock_param_ranges(struct platform_device *dsidev)

@@ -915,4 +915,6 @@ static inline u16 DISPC_MFLAG_THRESHOLD_OFFSET(enum omap_plane plane)
 		return 0;
 	}
 }
+
+extern struct pll_data *dispc_pll_data_find_by_src(enum omap_dss_clk_source);
 #endif

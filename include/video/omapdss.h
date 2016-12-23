@@ -218,14 +218,17 @@ enum omap_overlay_manager_caps {
 };
 
 enum omap_dss_clk_source {
-	OMAP_DSS_CLK_SRC_FCK = 0,		/* OMAP2/3: DSS1_ALWON_FCLK
-						 * OMAP4: DSS_FCLK */
-	OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DISPC,	/* OMAP3: DSI1_PLL_FCLK
-						 * OMAP4: PLL1_CLK1 */
-	OMAP_DSS_CLK_SRC_DSI_PLL_HSDIV_DSI,	/* OMAP3: DSI2_PLL_FCLK
-						 * OMAP4: PLL1_CLK2 */
-	OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DISPC,	/* OMAP4: PLL2_CLK1 */
-	OMAP_DSS_CLK_SRC_DSI2_PLL_HSDIV_DSI,	/* OMAP4: PLL2_CLK2 */
+	DSS_CLK_SRC_FCK = 0,	/* OMAP2/3: DSS1_ALWON_FCLK
+				 * OMAP4: DSS_FCLK */
+	DSS_CLK_SRC_PLL1_1,	/* OMAP3: DSI1_PLL_FCLK
+				 * OMAP4: PLL1_CLK1 */
+	DSS_CLK_SRC_PLL1_2,	/* OMAP3: DSI2_PLL_FCLK
+				 * OMAP4: PLL1_CLK2 */
+	DSS_CLK_SRC_PLL1_3,	/* DRA7x: PLL1 CLK3 */
+
+	DSS_CLK_SRC_PLL2_1,	/* OMAP4: PLL2_CLK1 */
+	DSS_CLK_SRC_PLL2_2,	/* OMAP4: PLL2_CLK2 */
+	DSS_CLK_SRC_PLL2_3,	/* DRA7x: PLL2 CLK3 */
 };
 
 enum omap_hdmi_flags {
@@ -1038,4 +1041,45 @@ omapdss_of_get_first_endpoint(const struct device_node *parent);
 
 struct omap_dss_device *
 omapdss_of_find_source_for_first_ep(struct device_node *node);
+
+static inline int hsdiv_index_from_src(enum omap_dss_clk_source src)
+{
+	switch (src) {
+	case DSS_CLK_SRC_PLL1_1:
+	case DSS_CLK_SRC_PLL2_1:
+		return 0;
+	case DSS_CLK_SRC_PLL1_2:
+	case DSS_CLK_SRC_PLL2_2:
+		return 1;
+	case DSS_CLK_SRC_PLL1_3:
+	case DSS_CLK_SRC_PLL2_3:
+		return 2;
+	case DSS_CLK_SRC_FCK:
+		pr_err("%s: DSS_CLK_SRC_FCK is not a PLL\n", __func__);
+		return 0;
+	default:
+		pr_err("not a valid clock source\n");
+		return 0;
+	}
+}
+static inline int pll_index_from_src(enum omap_dss_clk_source src)
+{
+	switch (src) {
+	case DSS_CLK_SRC_PLL1_1:
+	case DSS_CLK_SRC_PLL1_2:
+	case DSS_CLK_SRC_PLL1_3:
+		return 0;
+	case DSS_CLK_SRC_PLL2_1:
+	case DSS_CLK_SRC_PLL2_2:
+	case DSS_CLK_SRC_PLL2_3:
+		return 1;
+	case DSS_CLK_SRC_FCK:
+		pr_err("%s: DSS_CLK_SRC_FCK is not a PLL\n", __func__);
+		return 0;
+	default:
+		pr_err("not a valid clock source\n");
+		return 0;
+	}
+}
+
 #endif
