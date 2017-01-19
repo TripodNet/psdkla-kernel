@@ -2382,7 +2382,7 @@
 			ti,absolute-max-voltage-uv = <1500000>;
 		};
 
-		vpe {
+vpe: vpe {
 			compatible = "ti,vpe";
 			ti,hwmods = "vpe";
 			clocks = <&dpll_core_h23x2_ck>;
