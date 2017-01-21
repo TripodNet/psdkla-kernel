@@ -229,7 +229,7 @@
 };
 
 &mac {
-	mode-gpios = <&pcf_gpio_21 4 GPIO_ACTIVE_LOW>,
+	mode-gpios = <&pcf_gpio_21 4 GPIO_ACTIVE_HIGH>,
 		     <&pcf_hdmi 9 GPIO_ACTIVE_LOW>,	/* P11 */
 		     <&pcf_hdmi 10 GPIO_ACTIVE_LOW>;	/* P12 */
 	dual_emac;
