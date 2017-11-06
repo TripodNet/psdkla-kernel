@@ -77,13 +77,12 @@ static struct powerdomain ipu_7xx_pwrdm = {
 	.name		  = "ipu_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_IPU_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 2,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* aessmem */
 		[1] = PWRSTS_ON,	/* periphmem */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /* dss_7xx_pwrdm: Display subsystem power domain */
@@ -246,12 +245,11 @@ static struct powerdomain eve3_7xx_pwrdm = {
 	.name		  = "eve3_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_EVE3_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 1,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* eve3_bank */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /* emu_7xx_pwrdm: Emulation power domain */
@@ -271,14 +269,13 @@ static struct powerdomain dsp2_7xx_pwrdm = {
 	.name		  = "dsp2_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_DSP2_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 3,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* dsp2_edma */
 		[1] = PWRSTS_ON,	/* dsp2_l1 */
 		[2] = PWRSTS_ON,	/* dsp2_l2 */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /* dsp1_7xx_pwrdm: Tesla processor power domain */
@@ -286,14 +283,13 @@ static struct powerdomain dsp1_7xx_pwrdm = {
 	.name		  = "dsp1_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_DSP1_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 3,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* dsp1_edma */
 		[1] = PWRSTS_ON,	/* dsp1_l1 */
 		[2] = PWRSTS_ON,	/* dsp1_l2 */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /* cam_7xx_pwrdm: Camera subsystem power domain */
@@ -314,12 +310,11 @@ static struct powerdomain eve4_7xx_pwrdm = {
 	.name		  = "eve4_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_EVE4_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 1,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* eve4_bank */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /* eve2_7xx_pwrdm:  */
@@ -327,12 +322,11 @@ static struct powerdomain eve2_7xx_pwrdm = {
 	.name		  = "eve2_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_EVE2_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 1,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* eve2_bank */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /* eve1_7xx_pwrdm:  */
@@ -340,12 +334,11 @@ static struct powerdomain eve1_7xx_pwrdm = {
 	.name		  = "eve1_pwrdm",
 	.prcm_offs	  = DRA7XX_PRM_EVE1_INST,
 	.prcm_partition	  = DRA7XX_PRM_PARTITION,
-	.pwrsts		  = PWRSTS_OFF_ON,
+	.pwrsts		  = PWRSTS_ON,
 	.banks		  = 1,
 	.pwrsts_mem_on	= {
 		[0] = PWRSTS_ON,	/* eve1_bank */
 	},
-	.flags		  = PWRDM_HAS_LOWPOWERSTATECHANGE,
 };
 
 /*
