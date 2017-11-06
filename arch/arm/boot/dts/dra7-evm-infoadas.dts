@@ -21,6 +21,8 @@ DISABLE_COMPLETE(vpe);
 DISABLE_COMPLETE(ocmcram1);
 DISABLE_COMPLETE(hdmi);
 DISABLE_COMPLETE(hdmi0);
+DISABLE_COMPLETE(dss);
+DISABLE_COMPLETE(dispc);
 
 /* modules shared between BIOS and Linux, Do not reset or cutoff clks */
 DISABLE_PRCM(gpio1);

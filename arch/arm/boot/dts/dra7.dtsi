@@ -2198,7 +2198,7 @@
 			#size-cells = <1>;
 			ranges;
 
-			dispc@58001000 {
+			dispc: dispc@58001000 {
 				compatible = "ti,dra7-dispc";
 				reg = <0x58001000 0x1000>;
 				interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
