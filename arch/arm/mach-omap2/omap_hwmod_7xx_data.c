@@ -783,7 +783,6 @@ static struct omap_hwmod dra7xx_dss_hwmod = {
 	.name		= "dss_core",
 	.class		= &dra7xx_dss_hwmod_class,
 	.clkdm_name	= "dss_clkdm",
-	.flags		= HWMOD_CONTROL_OPT_CLKS_IN_RESET,
 	.main_clk	= "dss_dss_clk",
 	.prcm = {
 		.omap4 = {
