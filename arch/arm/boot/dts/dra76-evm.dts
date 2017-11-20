@@ -392,6 +392,34 @@
 			output-low;
 			line-name = "vin6_sel_s0";
 		};
+		p2 {
+			/* vin2_s0: high: ENET, CAM, low: VIN2 */
+			gpio-hog;
+			gpios = <2 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "vin2_s0";
+		};
+		p7 {
+			/* vin2_s2: high: VIN2 low: CAM */
+			gpio-hog;
+			gpios = <7 GPIO_ACTIVE_HIGH>;
+			output-high;
+			line-name = "vin2_s2";
+		};
+		p11 {
+			/* exvin2_s0: high: ENET, CAM, low: VIN2 */
+			gpio-hog;
+			gpios = <9 GPIO_ACTIVE_HIGH>;
+			output-low;
+			line-name = "exvin2_s0";
+		};
+		p12 {
+			/* exvin2_s2: high: VIN2 low: CAM */
+			gpio-hog;
+			gpios = <10 GPIO_ACTIVE_HIGH>;
+			output-high;
+			line-name = "exvin2_s2";
+		};
 	};
 
 	tlv320aic3106: tlv320aic3106@19 {
