@@ -74,7 +74,7 @@ DISABLE_PRCM(gpio6);
 
 	vsdk_sr1_mem: vsdk_sr1_mem@84000000 {
 		compatible = "shared-dma-pool";
-		reg = <0x0 0x84000000 0x0 0x10000000>;
+		reg = <0x0 0x84000000 0x0 0x15000000>;
 		status = "okay";
 	};
 
