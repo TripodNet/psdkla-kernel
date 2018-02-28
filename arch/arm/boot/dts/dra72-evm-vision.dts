@@ -44,8 +44,11 @@ i2cexp: &i2c5 {
 	 * vin2B <= vin2B (default)
 	 */
 	vip_mux: pinmux_vin5a_pins {
-		pinctrl-single,pins = <
-			0x0	(VIP_VIN3A | VIP_VIN4B | VIP_VIN2A | VIP_VIN2B)
+		pinctrl-single,pins = <0x0 (
+					VIP_VIN1A_GRP3A |
+					VIP_VIN1B_GRP4B |
+					VIP_VIN2A_GRP2A |
+					VIP_VIN2B_GRP2B)
 		>;
 	};
 };
