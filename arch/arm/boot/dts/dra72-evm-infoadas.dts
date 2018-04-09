@@ -85,8 +85,10 @@ DISABLE_PRCM(gpio6);
 
 &ipu2 {
 	/delete-property/ watchdog-timers;
+  timers= <&timer9> , <&timer11>;
 };
 
 &dsp1 {
 	/delete-property/ watchdog-timers;
+  timers= <&timer5> , <&timer6>;
 };
