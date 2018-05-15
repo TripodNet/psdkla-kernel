@@ -255,6 +255,14 @@ config DRM_VKMS
 
 	  If M is selected the module will be called vkms.
 
+config DRM_VDRM
+	tristate "Virtual DRM interface provider"
+	depends on DRM
+	help
+	  Choose this option to get virtual DRM devices, which can
+	  be used by user space applications as a DRM end point
+	  If M is selected the module will be called vdrm.
+
 source "drivers/gpu/drm/exynos/Kconfig"
 
 source "drivers/gpu/drm/rockchip/Kconfig"
