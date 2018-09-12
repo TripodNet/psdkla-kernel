@@ -67,14 +67,14 @@ DISABLE_PRCM(gpio6);
 
 	cmem_pool: cmem@A9000000 {
 		compatible = "shared-dma-pool";
-		reg = <0x0 0xA9000000 0x0 0x4000000>;
+		reg = <0x0 0xA9000000 0x0 0x2000000>;
 		no-map;
 		status = "okay";
 	};
 
 	vsdk_sr1_mem: vsdk_sr1_mem@84000000 {
 		compatible = "shared-dma-pool";
-		reg = <0x0 0x84000000 0x0 0x10000000>;
+		reg = <0x0 0x86000000 0x0 0x10000000>;
 		status = "okay";
 	};
 
