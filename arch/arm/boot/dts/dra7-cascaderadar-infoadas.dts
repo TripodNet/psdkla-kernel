@@ -1,0 +1,171 @@
+/*
+ * Copyright (C) 2013 Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+#include "dra7-evm.dts"
+#include <dt-bindings/net/ti-dp83867.h>
+
+
+#define DISABLE_PRCM(label) &label { ti,no-idle; ti,no-reset-on-init; }
+#define DISABLE_COMPLETE(label) &label { status = "disabled"; ti,no-idle; ti,no-reset-on-init; }
+#define LATE_ATTACH(label) &label { ti,late-attach; ti,no-idle; ti,no-reset-on-init; }
+
+/* modules used by BIOS, disable from Linux */
+DISABLE_COMPLETE(vip1);
+DISABLE_COMPLETE(vip2);
+DISABLE_COMPLETE(vip3);
+DISABLE_COMPLETE(i2c2);
+DISABLE_COMPLETE(wdt2);
+DISABLE_COMPLETE(vpe);
+DISABLE_COMPLETE(ocmcram1);
+DISABLE_COMPLETE(hdmi);
+DISABLE_COMPLETE(hdmi0);
+DISABLE_COMPLETE(gpio2);
+DISABLE_COMPLETE(gpio7);
+DISABLE_COMPLETE(gpio5);
+DISABLE_COMPLETE(mcspi1);
+DISABLE_COMPLETE(mcspi2);
+DISABLE_COMPLETE(mcspi3);
+DISABLE_COMPLETE(mcspi4);
+DISABLE_COMPLETE(mmc4);
+DISABLE_COMPLETE(mcasp3);
+
+/* modules shared between BIOS and Linux, Do not reset or cutoff clks */
+DISABLE_PRCM(gpio1);
+DISABLE_PRCM(gpio4);
+DISABLE_PRCM(gpio6);
+
+/* Linux uses first 32 channels, BIOS uses last 32 */
+&edma {
+	dma-requests = <32>;
+};
+
+/* Update the CMA regions for Vision SDK binaries */
+&ipu2_cma_pool {
+	reg = <0x0 0x99000000 0x0 0x5000000>;
+};
+
+&dsp1_cma_pool {
+	reg = <0x0 0xa1000000 0x0 0x2000000>;
+};
+
+&ipu1_cma_pool {
+	reg = <0x0 0x9e000000 0x0 0x2000000>;
+};
+
+&dsp2_cma_pool {
+	reg = <0x0 0xa3000000 0x0 0x2000000>;
+};
+
+
+/* Additional memory regions required for Vision SDK
+ * Keep this in sync with VSDK apps/build/tda2xx/mem_segment_definition_linux.xs
+ */
+&reserved_mem {
+	cmem_ocmc: cmem@40300000 {
+		compatible = "shared-dma-pool";
+		reg = <0x0 0x40300000 0x0 0x300000>;
+		sram = <&ocmcram1>;
+		no-map;
+		status = "okay";
+	};
+
+	cmem_pool: cmem@A9000000 {
+		compatible = "shared-dma-pool";
+		reg = <0x0 0xA9000000 0x0 0x4000000>;
+		no-map;
+		status = "okay";
+	};
+
+	vsdk_sr1_mem: vsdk_sr1_mem@84000000 {
+		compatible = "shared-dma-pool";
+		reg = <0x0 0x84000000 0x0 0x10000000>;
+		status = "okay";
+	};
+
+	vsdk_sr0_mem: vsdk_sr0_mem@A0000000 {
+		compatible = "shared-dma-pool";
+		reg = <0x0 0xA0000000 0x0 0x1000000>;
+		status = "okay";
+	};
+
+	vsdk_eve_mem: vsdk_eve_mem@A5000000 {
+		compatible = "shared-dma-pool";
+		reg = <0x0 0xA5000000 0x0 0x4000000>;
+		status = "okay";
+	};
+};
+
+&ipu1 {
+	status= "disabled";
+	/delete-property/ watchdog-timers;
+};
+
+&ipu2 {
+	/delete-property/ watchdog-timers;
+	timers= <&timer9> , <&timer11>;
+};
+
+&dsp1 {
+	/delete-property/ watchdog-timers;
+};
+
+&dsp2 {
+	/delete-property/ watchdog-timers;
+};
+
+&evm_3v3_sd {
+	/delete-property/ gpio;
+};
+
+&i2c1 {
+        gpio_exp_tca: tca9539@76 {
+                compatible = "ti,tca9539";
+                reg = <0x76>;
+                gpio-controller;
+                #gpio-cells = <2>;
+        };
+
+};
+
+&mac {
+	mode-gpios = <&gpio_exp_tca 13 GPIO_ACTIVE_LOW>;
+};
+
+&davinci_mdio {
+	dp83867_0: ethernet-phy@2 {
+		reg = <2>;
+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+		ti,tx-internal-delay = <DP83867_RGMIIDCTL_250_PS>;
+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_8_B_NIB>;
+		ti,min-output-impedance;
+		ti,dp83867-rxctrl-strap-quirk;
+	};
+
+	dp83867_1: ethernet-phy@3 {
+		reg = <3>;
+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+		ti,tx-internal-delay = <DP83867_RGMIIDCTL_250_PS>;
+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_8_B_NIB>;
+		ti,min-output-impedance;
+		ti,dp83867-rxctrl-strap-quirk;
+	};
+};
+
+&pcie2_phy {
+	status = "okay";
+};
+
+&pcie1_rc {
+	num-lanes = <2>;
+	phys = <&pcie1_phy>, <&pcie2_phy>;
+	phy-names = "pcie-phy0", "pcie-phy1";
+	gpios = <&gpio_exp_tca 11 GPIO_ACTIVE_HIGH>;
+};
+
+&pcie1_ep {
+	gpios = <&gpio_exp_tca 11 GPIO_ACTIVE_HIGH>;
+};
