@@ -94,7 +94,6 @@ DISABLE_PRCM(gpio6);
 };
 
 &ipu1 {
-	status= "disabled";
 	/delete-property/ watchdog-timers;
 };
 
