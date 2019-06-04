@@ -8,6 +8,9 @@
 #include "dra7-evm.dts"
 #include <dt-bindings/net/ti-dp83867.h>
 
+/ {
+	model = "TI DRA742 Cascade Radar Board";
+};
 
 #define DISABLE_PRCM(label) &label { ti,no-idle; ti,no-reset-on-init; }
 #define DISABLE_COMPLETE(label) &label { status = "disabled"; ti,no-idle; ti,no-reset-on-init; }
