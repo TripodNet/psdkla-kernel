@@ -5,7 +5,7 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#include "dra72-evm-revc-lcd-osd101t2045.dts"
+#include "dra72-evm-revc.dts"
 
 #define DISABLE_PRCM(label) &label { ti,no-idle; ti,no-reset-on-init; }
 #define DISABLE_COMPLETE(label) &label { status = "disabled"; ti,no-idle; ti,no-reset-on-init; }
