@@ -204,7 +204,7 @@ static int sg_alloc_from_vaddr(struct sg_table *sgt, struct page ***pagesptr,
 	if (pages == NULL)
 		return -ENOMEM;
 
-	if (sg_alloc_table(sgt, nr, 0)) {
+	if (sg_alloc_table(sgt, nr, GFP_KERNEL)) {
 		printk(KERN_ALERT "Failed to allocated sgt for %d pages\n", nr);
 		goto out;
 	}
