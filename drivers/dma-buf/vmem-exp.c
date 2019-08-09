@@ -191,7 +191,7 @@ static int sg_alloc_from_vaddr(struct sg_table *sgt, struct page ***pagesptr,
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
 	unsigned long addr, pfn;
-	int first, last, i = 0, nr, locked, ret = 0;
+	int first, last, i = 0, nr, locked = 0, ret = 0;
 	struct page **pages;
 
 	vaddr &= PAGE_MASK;
