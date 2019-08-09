@@ -23,7 +23,7 @@
 #include <linux/dma-buf.h>
 #include <linux/scatterlist.h>
 #include <linux/vmalloc.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 #include "dmabuf-ioctl.h"
 
 #define VMEMEXP_NAME		"vmemexp"
@@ -107,11 +107,8 @@ static void vmem_exp_dmabuf_ops_release(struct dma_buf *dbuf)
 	int i = buf->num_pages;
 
 	if (atomic_dec_and_test(&buf->refcount)) {
-		DEFINE_DMA_ATTRS(attrs);
-
-		dma_set_attr(DMA_ATTR_SKIP_CPU_SYNC, &attrs);
 		dma_unmap_sg_attrs(buf->dev, sgt->sgl, sgt->orig_nents,
-				buf->dma_dir, &attrs);
+				buf->dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
 
 		while (--i >= 0) {
 			if (buf->dma_dir == DMA_FROM_DEVICE) {
@@ -125,15 +122,14 @@ static void vmem_exp_dmabuf_ops_release(struct dma_buf *dbuf)
 	}
 }
 
-static void *vmem_exp_dmabuf_ops_kmap(struct dma_buf *dbuf, unsigned long pgnum)
+static void *vmem_exp_dmabuf_ops_vmap(struct dma_buf *dbuf)
 {
 printk(KERN_ALERT "%s: kernel access not supported yet\n", __func__);
 	return NULL;
 }
-
-static void *vmem_exp_dmabuf_ops_vmap(struct dma_buf *dbuf)
+static void *vmem_exp_dmabuf_ops_kmap(struct dma_buf *dbuf, unsigned long pgnum)
 {
-printk(KERN_ALERT "%s: kernel access not supported yet\n", __func__);
+	printk(KERN_ALERT "%s: kernel access not supported yet\n", __func__);
 	return NULL;
 }
 
@@ -179,9 +175,8 @@ printk(KERN_ALERT "%s: debug dbuf %p\n", __func__, dbuf);
 static struct dma_buf_ops vmem_exp_dmabuf_ops = {
 	.map_dma_buf = vmem_exp_dmabuf_ops_map,
 	.unmap_dma_buf = vmem_exp_dmabuf_ops_unmap,
-	.kmap = vmem_exp_dmabuf_ops_kmap,
-	.kmap_atomic = vmem_exp_dmabuf_ops_kmap,
 	.vmap = vmem_exp_dmabuf_ops_vmap,
+	.map = vmem_exp_dmabuf_ops_kmap,
 	.mmap = vmem_exp_dmabuf_ops_mmap,
 	.release = vmem_exp_dmabuf_ops_release,
 };
@@ -246,8 +241,8 @@ static int sg_alloc_from_vaddr(struct sg_table *sgt, struct page ***pagesptr,
 	} else {
 		/* Get user pages directly */
 
-		ret = get_user_pages_locked(current, mm, vaddr, nr,
-			true, true, pages, &locked);
+		ret = get_user_pages_locked(vaddr, nr,
+			0, pages, &locked);
 		if (ret != nr) {
 			printk(KERN_ALERT "Got ref for %d user pages, expected %d\n",
 				ret, nr);
@@ -281,7 +276,6 @@ static struct vmem_exp_buf *vmem_exp_export(struct device *dev,
 {
 	struct vmem_exp_buf *buf;
 	struct sg_table *sgt;
-	DEFINE_DMA_ATTRS(attrs);
 	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
 	int ret = 0;
 
@@ -302,8 +296,7 @@ static struct vmem_exp_buf *vmem_exp_export(struct device *dev,
 		goto fail;
 	}
 
-	dma_set_attr(DMA_ATTR_SKIP_CPU_SYNC, &attrs);
-	ret = dma_map_sg_attrs(dev, sgt->sgl, sgt->orig_nents, dma_dir, &attrs);
+	ret = dma_map_sg_attrs(dev, sgt->sgl, sgt->orig_nents, dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
 	if (!ret) {
 		dev_err(dev, "failed to map scatterlist\n");
 		goto fail;
