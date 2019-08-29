@@ -866,11 +866,6 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
 	ddev->dev_private = priv;
 
 	priv->dev = dev;
-	priv->dss = omapdss_get_dss();
-	priv->dispc = dispc_get_dispc(priv->dss);
-	priv->dispc_ops = dispc_get_ops(priv->dss);
-
-	omap_crtc_pre_init(priv);
 
 	soc = soc_device_match(omapdrm_soc_devices);
 	priv->omaprev = soc ? (unsigned int)soc->data : 0;
@@ -879,14 +874,14 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
 	mutex_init(&priv->list_lock);
 	INIT_LIST_HEAD(&priv->obj_list);
 
-	/* Get memory bandwidth limits */
-	if (priv->dispc_ops->get_memory_bandwidth_limit)
-		priv->max_bandwidth =
-			priv->dispc_ops->get_memory_bandwidth_limit(priv->dispc);
-
 	omap_gem_init(ddev);
 
 	drm_mode_config_init(ddev);
+	dev_set_drvdata(ddev->dev, dev);
+
+	drm_dev_register(ddev, 0);
+
+	return 0;
 
 	ret = omap_global_obj_init(ddev);
 	if (ret)
@@ -996,9 +991,6 @@ static int pdev_probe(struct platform_device *pdev)
 {
 	struct omap_drm_private *priv;
 	int ret;
-
-	if (omapdss_is_initialized() == false)
-		return -EPROBE_DEFER;
 
 	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
 	if (ret) {

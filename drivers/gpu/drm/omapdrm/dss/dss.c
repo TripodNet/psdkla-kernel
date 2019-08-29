@@ -102,6 +102,7 @@ static const char * const dss_generic_clk_source_names[] = {
 	[DSS_CLK_SRC_HDMI_PLL]	= "HDMI PLL",
 };
 
+struct platform_device *omap_drm_device = NULL;
 static inline void dss_write_reg(struct dss_device *dss,
 				 const struct dss_reg idx, u32 val)
 {
@@ -1324,7 +1325,7 @@ static int dss_bind(struct device *dev)
 
 	omapdss_set_dss(dss);
 
-	drm_pdev = platform_device_register_simple("omapdrm", 0, NULL, 0);
+	drm_pdev = omap_drm_device;
 	if (IS_ERR(drm_pdev)) {
 		component_unbind_all(dev, NULL);
 		return PTR_ERR(drm_pdev);
@@ -1637,6 +1638,10 @@ static struct platform_driver * const omap_dss_drivers[] = {
 
 static int __init omap_dss_init(void)
 {
+	omap_drm_device = platform_device_register_simple("omapdrm", 0, NULL, 0);
+	if(IS_ERR(omap_drm_device))
+		printk("Failed to register omapdrm\n");
+
 	return platform_register_drivers(omap_dss_drivers,
 					 ARRAY_SIZE(omap_dss_drivers));
 }
@@ -1645,6 +1650,8 @@ static void __exit omap_dss_exit(void)
 {
 	platform_unregister_drivers(omap_dss_drivers,
 				    ARRAY_SIZE(omap_dss_drivers));
+
+	platform_device_unregister(omap_drm_device);
 }
 
 module_init(omap_dss_init);
