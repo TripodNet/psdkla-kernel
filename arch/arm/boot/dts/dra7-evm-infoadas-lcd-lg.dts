@@ -1,0 +1,19 @@
+#include "dra7-evm-infoadas.dts"
+#include "dra7x-evm-lcd-lg.dtsi"
+
+&ldc3001 {
+	interrupt-parent = <&gpio1>;
+	interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
+	status = "disabled";
+};
+
+&pcf_lcd {
+	lines-initial-states = <0x2000>; /* CON_LCD_PWR_DN */
+	/* Lines initial state is overwritten if gpio isn't hogged */
+	pdwn_lcd {
+		gpio-hog;
+		gpios = <13 GPIO_ACTIVE_HIGH>;
+		output-low;
+		line-name = "CON_LCD_PWR_DN";
+	};
+};
