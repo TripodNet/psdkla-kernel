@@ -63,6 +63,9 @@ DISABLE_PRCM(gpio6);
 	reg = <0x0 0xa3000000 0x0 0x2000000>;
 };
 
+&gpu_memory_region {
+	reg = <0x0 0xb0000000 0x0 0x4000000>;
+};
 
 /* Additional memory regions required for Vision SDK
  * Keep this in sync with VSDK apps/build/tda2xx/mem_segment_definition_linux.xs
