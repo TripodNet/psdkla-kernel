@@ -1,0 +1,114 @@
+                    Virtual memory exporter
+                    ~~~~~~~~~~~~~~~~~~~~~~~
+
+                        Nikhil Devshatwar
+                       <nikhil.nd@ti.com>
+
+This document explains the technical details and usage of virtual memory
+exporter driver. vmemexp allows to export a portion of a process's virtual
+memory space as a dma_buf.
+
+
+Motivation
+==========
+  For sharing buffers across different drivers, dma_buf provides a generic and
+secure mechanism. As such, dma_buf has only helpers and the actual code for
+sharing buffers is implemented in the exporter and importer drivers.
+
+  Typically, all drivers which allocate memory should support dma_buf export
+which makes 'sharing of buffers with zero-copy' possible system wide. But only
+a few drivers support dma_buf export functionality as of now. There are many
+legacy drivers which allocate their own memory and only support mmap methods.
+e.g. many of the V4L2 drivers don't support the VIDIOC_EXPBUF ioctl.
+
+  Also, there are many other drivers which manage contiguous memory pools and
+allow applications to allocate from them. Typical embedded use cases allocate
+buffers from CMA regions (e.g. CMEM driver from Texas Instruments) and these
+buffers cannot be shared with other drivers due to lack of dma_buf support.
+
+
+Idea and approach
+=================
+  The main idea behind the vmem-exp driver is to allow exporting virtual memory
+chunks as the dma_buf. This virtual memory can be mapped from different drivers,
+or can even be user space memory.
+
+  This allows to share the memory from one driver to others without changing the
+legacy drivers at all. Application can continue to use the driver as-is, but
+still be able to share the memory.
+
+  For any dma_buf exporter, driver needs to know the physical pages corresponding
+to the buffer. To export virtual memory, a page walk needs to be done to find out
+the scatter gather list of the pages backed by the memory.
+
+
+Application interface (ABI)
+===========================
+
+/dev/vmem-exp                : Simple charater device with following ioctls
+ - ioctl(DBUFIOC_VMEM_EXP)   : Export a virtual memory as dma_buf
+                               Needs a page aligned address for exporting
+ - ioctl(DBUFIOC_VMEM_SYNC)  : Performs cache synchronization
+                               Generic method for applications to sync dma_buf
+                               mapped memory
+
+
+Advantages
+==========
+* Allows to share buffers from drivers which don't have dma_buf support
+  - Map the memory from the allocator driver
+  - Export it as dma_buf using the vmem-exp driver and get the fd
+  - Pass it to other drivers to share with zero-copy
+
+* Allows sharing user space memory with drivers which don't support USERPTR
+  - Many drm based GPU drivers can work with scatter gather list, but
+    unfortunately DRM doesn't have support for USERPTR
+  - Application can malloc the memory and convert to dma_buf
+  - Pass to DRM GPU drivers as dma_buf, thus using malloc memory
+
+* Integration of the ready made software components
+  - Many times it is advised to allocate memory using a dma_buf exporter and
+    then generate content into it and then share it with other drivers.
+    e.g. use case: video capture =>  GPU display
+  - There are many software components which generate content into user space
+    memory. e.g. Gstreamer videotestsrc write the content into a malloc buffer
+  - Sharing this buffer with GPU display isn't possible without copying.
+    With vmem-exp, it is possible to export the same memory as dma_buf and
+    share it with GPU display driver
+
+* Sharing memory across process boundary
+  - All GUI applications talk to composition server via socket and the memory
+    has to be shared across the processor boundary.
+  - Typically this is done by allocating a shared memory and writing content
+    into it.
+  - For some 3rd party shaders, which generate textures into their own memory,
+    this is impossible. Generally, a memcpy is involved to share these buffers.
+  - With vmem-exp, the already allocated memory can be exported as dma_buf
+    Using socket's fd passing, this can be shared with the composition server
+    and thus enabling zero-copy sharing across process boundary
+
+* Alternative for shared memory
+  - For sharing memory across processes, it needs to be specifically allocated.
+  - What if you want to share the memory which is already present.
+    e.g. gdb wants to access mapped memory of a process.
+  - Using vmem-exp, the memory can be converted to dma_buf and mapped into
+    different process.
+
+
+Security concerns
+=================
+* Handling locking and swapping of pages
+  - vmem-exp increments the refcount of the pages to avoid them swapped out
+  - This means even when the process is not active, the pages exported by it
+    will be guaranteed to be resident in the memory.
+
+* Avoid security holes
+  - Simple checks like segment overflows are performed by the page walk itself
+  - Additional checks to allow only data segments can be implemented
+  - Additional ioctls can be implemented which restrict exports of certain memory
+
+* Handling race conditions
+  - What happens if the original driver freed the memory?
+  - Would these situations lead to kernel crashes or security holes?
+
+

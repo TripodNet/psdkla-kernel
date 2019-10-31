@@ -191,6 +191,16 @@ config DMA_FENCE_TRACE
 	  lockup related problems for dma-buffers shared across multiple
 	  devices.
 
+config VMEM_EXP_DMABUF
+	tristate "Support for virtual memory DMAbuf exporter driver"
+	default n
+	select VIDEOBUF2_DMA_SG
+	help
+	  This driver helps to export any virtual memory segment as a
+	  DMAbuf fd. It is useful to reuse / import memory from the drivers
+          which do not have dma buf export support.
+          Also, it helps avoid use of shared memory and un-necessary memcpy.
+
 config DMA_CMA
 	bool "DMA Contiguous Memory Allocator"
 	depends on HAVE_DMA_CONTIGUOUS && CMA
