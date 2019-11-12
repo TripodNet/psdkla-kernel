@@ -38,19 +38,19 @@ DISABLE_PRCM(gpio6);
 };
 
 /* Update the CMA regions for Vision SDK binaries */
-&ipu2_cma_pool {
+&ipu2_memory_region {
 	reg = <0x0 0x99000000 0x0 0x5000000>;
 };
 
-&dsp1_cma_pool {
+&dsp1_memory_region {
 	reg = <0x0 0xa1000000 0x0 0x2000000>;
 };
 
-&ipu1_cma_pool {
+&ipu1_memory_region {
 	reg = <0x0 0x9e000000 0x0 0x2000000>;
 };
 
-&dsp2_cma_pool {
+&dsp2_memory_region {
 	reg = <0x0 0xa3000000 0x0 0x2000000>;
 };
 
