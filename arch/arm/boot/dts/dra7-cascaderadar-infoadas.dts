@@ -147,6 +147,10 @@ DISABLE_PRCM(gpio6);
 	mode-gpios = <&gpio_exp_tca 13 GPIO_ACTIVE_LOW>;
 };
 
+&cpsw_emac0 {
+        phy-mode = "rgmii-id";
+};
+
 &davinci_mdio {
 	dp83867_0: ethernet-phy@2 {
 		reg = <2>;
